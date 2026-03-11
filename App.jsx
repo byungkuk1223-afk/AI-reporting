@@ -2548,7 +2548,7 @@ export default function App(){
     {/* LOADING */}
     {loading&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.82)",zIndex:300,
       display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:14}}>
-      <div style={{fontSize:46}}>🐻</div>
+      <div style={{fontSize:46}}><svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='1' y='10' width='3' height='7' rx='1' fill='white' fillOpacity='0.9'/><rect x='7' y='6' width='3' height='11' rx='1' fill='white'/><rect x='13' y='3' width='3' height='14' rx='1' fill='white' fillOpacity='0.9'/></svg></div>
       <div style={{fontSize:15,color:"#111827",fontWeight:700}}>{loadMsg}</div>
       <div style={{display:"flex",gap:8}}>
         {[0,1,2].map(i=><div key={i} style={{width:9,height:9,borderRadius:"50%",background:"#8b5cf6",
@@ -2573,7 +2573,7 @@ export default function App(){
     onMouseEnter={e=>{e.currentTarget.style.transform="scale(1.1)";e.currentTarget.style.boxShadow="0 12px 40px rgba(139,92,246,.6)";}}
     onMouseLeave={e=>{e.currentTarget.style.transform="scale(1)";e.currentTarget.style.boxShadow="0 8px 32px rgba(139,92,246,.45)";}}
     title="AI 비서에게 거래 추가 요청">
-      🐻
+      <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='1' y='10' width='3' height='7' rx='1' fill='white' fillOpacity='0.9'/><rect x='7' y='6' width='3' height='11' rx='1' fill='white'/><rect x='13' y='3' width='3' height='14' rx='1' fill='white' fillOpacity='0.9'/></svg>
     </button>}
 
     {/* TOPBAR */}
@@ -2581,7 +2581,7 @@ export default function App(){
       background:"#080c14",borderBottom:"1px solid rgba(0,0,0,.07)",flexShrink:0}}>
       <div style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer"}} onClick={()=>setPage("home")}>
         <div style={{width:28,height:28,borderRadius:8,background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",
-          display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>🐻</div>
+          display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}><svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='1' y='10' width='3' height='7' rx='1' fill='white' fillOpacity='0.9'/><rect x='7' y='6' width='3' height='11' rx='1' fill='white'/><rect x='13' y='3' width='3' height='14' rx='1' fill='white' fillOpacity='0.9'/></svg></div>
         <span style={{fontSize:15,fontWeight:900,color:"#111827",letterSpacing:"-.03em"}}>FitBear</span>
       </div>
       <span style={{fontSize:12,color:"#6b7280",flex:1}}>AI 경영관리 플랫폼</span>
@@ -2595,7 +2595,7 @@ export default function App(){
         background:"rgba(139,92,246,.15)",border:"1px solid rgba(139,92,246,.4)",color:"#c4b5fd",
         display:"flex",alignItems:"center",gap:6,
       }}>
-        <span>🐻</span><span>AI 비서</span>
+        <span><svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='1' y='10' width='3' height='7' rx='1' fill='white' fillOpacity='0.9'/><rect x='7' y='6' width='3' height='11' rx='1' fill='white'/><rect x='13' y='3' width='3' height='14' rx='1' fill='white' fillOpacity='0.9'/></svg></span><span>AI 비서</span>
       </button>
     </div>
 
@@ -2808,7 +2808,7 @@ async function callAI(userMsg, accounts, clients=[]) {
 // 채팅 오버레이 컴포넌트
 function AIChatOverlay({ accounts, clients=[], onAddTx, onClose }) {
   const [msgs,    setMsgs]    = useState([
-    { role:"ai", text:"안녕하세요! 🐻 거래 내역을 말씀해 주시면 바로 추가해 드릴게요.\n\n예시:\n• \"8023 카드로 스타벅스 4500원 결제했어\"\n• \"35504 계좌에서 임차료 150만 이체했어\"\n• \"오늘 국민카드로 점심 13000원 썼어\"" }
+    { role:"ai", text:"안녕하세요! <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='1' y='10' width='3' height='7' rx='1' fill='white' fillOpacity='0.9'/><rect x='7' y='6' width='3' height='11' rx='1' fill='white'/><rect x='13' y='3' width='3' height='14' rx='1' fill='white' fillOpacity='0.9'/></svg> 거래 내역을 말씀해 주시면 바로 추가해 드릴게요.\n\n예시:\n• \"8023 카드로 스타벅스 4500원 결제했어\"\n• \"35504 계좌에서 임차료 150만 이체했어\"\n• \"오늘 국민카드로 점심 13000원 썼어\"" }
   ]);
   const [input,   setInput]   = useState("");
   const [loading, setLoading] = useState(false);
@@ -2919,9 +2919,9 @@ function AIChatOverlay({ accounts, clients=[], onAddTx, onClose }) {
             width: 36, height: 36, borderRadius: 10, flexShrink: 0,
             background: "linear-gradient(135deg,#8b5cf6,#6d28d9)",
             display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18,
-          }}>🐻</div>
+          }}><svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='1' y='10' width='3' height='7' rx='1' fill='white' fillOpacity='0.9'/><rect x='7' y='6' width='3' height='11' rx='1' fill='white'/><rect x='13' y='3' width='3' height='14' rx='1' fill='white' fillOpacity='0.9'/></svg></div>
           <div style={{flex:1}}>
-            <div style={{fontSize:14,fontWeight:800,color:"#111827"}}>FitBear AI 비서</div>
+            <div style={{fontSize:14,fontWeight:800,color:"#111827"}}>AI 경영 비서</div>
             <div style={{fontSize:10,color:"#a78bfa",marginTop:1}}>
               {accounts.length}개 계좌 연결됨 · 자연어로 거래 추가
             </div>
@@ -2946,7 +2946,7 @@ function AIChatOverlay({ accounts, clients=[], onAddTx, onClose }) {
                 {m.role==="ai" && (
                   <div style={{width:26,height:26,borderRadius:8,flexShrink:0,
                     background:"linear-gradient(135deg,#7c3aed,#5b21b6)",
-                    display:"flex",alignItems:"center",justifyContent:"center",fontSize:12}}>🐻</div>
+                    display:"flex",alignItems:"center",justifyContent:"center",fontSize:12}}><svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><rect x='1' y='10' width='3' height='7' rx='1' fill='white' fillOpacity='0.9'/><rect x='7' y='6' width='3' height='11' rx='1' fill='white'/><rect x='13' y='3' width='3' height='14' rx='1' fill='white' fillOpacity='0.9'/></svg></div>
                 )}
                 <div style={{
                   maxWidth: "82%",
