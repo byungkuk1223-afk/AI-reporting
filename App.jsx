@@ -251,8 +251,8 @@ function exportPL(pl, label){
 // ─────────────────────────────────────────────────────────────────────────────
 function Chip({label,active,color="#8b5cf6",onClick}){
   return <button onClick={onClick} style={{padding:"4px 13px",borderRadius:20,fontSize:11,fontWeight:600,
-    cursor:"pointer",border:`1px solid ${active?color:"rgba(255,255,255,.1)"}`,
-    background:active?`${color}22`:"transparent",color:active?color:"#6b7280",transition:"all .13s"}}>
+    cursor:"pointer",border:`1px solid ${active?color:"rgba(0,0,0,.1)"}`,
+    background:active?`${color}22`:"transparent",color:active?color:"#9ca3af",transition:"all .13s"}}>
     {label}</button>;
 }
 
@@ -260,8 +260,8 @@ function PLRow({label,value,level=0,bold,tag,color,indent}){
   const isPos = value>=0;
   return <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",
     padding:`${bold?"11px":"8px"} 20px`,
-    background:bold?"rgba(255,255,255,.025)":"transparent",
-    borderBottom:"1px solid rgba(255,255,255,.04)"}}>
+    background:bold?"rgba(0,0,0,.025)":"transparent",
+    borderBottom:"1px solid rgba(0,0,0,.04)"}}>
     <span style={{fontSize:bold?13:12,color:bold?"#e5e7eb":"#9ca3af",fontWeight:bold?700:400,
       paddingLeft:(level||0)*14}}>{label}</span>
     {tag!=null
@@ -275,17 +275,17 @@ function PLRow({label,value,level=0,bold,tag,color,indent}){
 }
 
 function BSSection({title,color,items,total}){
-  return <div style={{background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.07)",borderRadius:12,overflow:"hidden",marginBottom:12}}>
-    <div style={{padding:"11px 16px",background:`${color}12`,borderBottom:"1px solid rgba(255,255,255,.06)",
+  return <div style={{background:"rgba(0,0,0,.025)",border:"1px solid rgba(0,0,0,.07)",borderRadius:12,overflow:"hidden",marginBottom:12}}>
+    <div style={{padding:"11px 16px",background:`${color}12`,borderBottom:"1px solid rgba(0,0,0,.04)",
       display:"flex",justifyContent:"space-between",alignItems:"center"}}>
       <span style={{fontSize:12,fontWeight:700,color}}>{title}</span>
       <span style={{fontSize:13,fontWeight:800,color}}>{fmt(total)}원</span>
     </div>
     {items.map((r,i)=><div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",
-      padding:"9px 16px",borderBottom:"1px solid rgba(255,255,255,.04)"}}>
+      padding:"9px 16px",borderBottom:"1px solid rgba(0,0,0,.04)"}}>
       <div>
-        <span style={{fontSize:12,color:"#d1d5db"}}>{r.name}</span>
-        {r.note&&<span style={{fontSize:10,color:"#4b5563",marginLeft:8}}>{r.note}</span>}
+        <span style={{fontSize:12,color:"#9ca3af"}}>{r.name}</span>
+        {r.note&&<span style={{fontSize:10,color:"#9ca3af",marginLeft:8}}>{r.note}</span>}
       </div>
       <span style={{fontSize:12,fontWeight:600,color}}>{fmt(r.value)}원</span>
     </div>)}
@@ -305,50 +305,50 @@ function AddAccModal({onAdd,onClose}){
     {v:"personal_card",l:"개인카드",i:"💳"},{v:"corporate",l:"법인계좌",i:"🏢"}];
   return <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.75)",zIndex:200,
     display:"flex",alignItems:"center",justifyContent:"center"}} onClick={onClose}>
-    <div onClick={e=>e.stopPropagation()} style={{background:"#131826",border:"1px solid rgba(139,92,246,.35)",
+    <div onClick={e=>e.stopPropagation()} style={{background:"#ffffff",border:"1px solid rgba(139,92,246,.35)",
       borderRadius:20,padding:32,width:460,boxShadow:"0 24px 60px rgba(0,0,0,.6)"}}>
-      <h3 style={{margin:"0 0 22px",fontSize:16,fontWeight:800,color:"#fff"}}>🏦 계좌 / 카드 등록</h3>
+      <h3 style={{margin:"0 0 22px",fontSize:16,fontWeight:800,color:"#111827"}}>🏦 계좌 / 카드 등록</h3>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14}}>
         <div style={{gridColumn:"1/-1"}}>
-          <label style={{fontSize:11,color:"#6b7280",display:"block",marginBottom:8,fontWeight:600}}>종류</label>
+          <label style={{fontSize:11,color:"#9ca3af",display:"block",marginBottom:8,fontWeight:600}}>종류</label>
           <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
             {TYPES.map(t=><button key={t.v} onClick={()=>setType(t.v)} style={{
               padding:"6px 12px",borderRadius:20,fontSize:11,fontWeight:600,cursor:"pointer",
-              background:type===t.v?"rgba(139,92,246,.2)":"rgba(255,255,255,.04)",
-              border:`1px solid ${type===t.v?"#8b5cf6":"rgba(255,255,255,.1)"}`,
+              background:type===t.v?"rgba(139,92,246,.2)":"rgba(0,0,0,.04)",
+              border:`1px solid ${type===t.v?"#8b5cf6":"rgba(0,0,0,.1)"}`,
               color:type===t.v?"#c4b5fd":"#6b7280"}}>{t.i} {t.l}</button>)}
           </div>
         </div>
         {[{l:"계좌명",v:name,sv:setName,ph:"예: 신한 보통예금"},
           {l:"은행/카드사",v:bank,sv:setBank,ph:"예: 신한은행"},
         ].map(f=><div key={f.l}>
-          <label style={{fontSize:11,color:"#6b7280",display:"block",marginBottom:6,fontWeight:600}}>{f.l}</label>
+          <label style={{fontSize:11,color:"#9ca3af",display:"block",marginBottom:6,fontWeight:600}}>{f.l}</label>
           <input value={f.v} onChange={e=>f.sv(e.target.value)} placeholder={f.ph}
-            style={{width:"100%",background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",
-              borderRadius:8,padding:"9px 12px",color:"#fff",fontSize:13,outline:"none",boxSizing:"border-box"}}/>
+            style={{width:"100%",background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",
+              borderRadius:8,padding:"9px 12px",color:"#111827",fontSize:13,outline:"none",boxSizing:"border-box"}}/>
         </div>)}
         <div style={{gridColumn:"1/-1"}}>
-          <label style={{fontSize:11,color:"#6b7280",display:"block",marginBottom:6,fontWeight:600}}>계좌번호 (선택)</label>
+          <label style={{fontSize:11,color:"#9ca3af",display:"block",marginBottom:6,fontWeight:600}}>계좌번호 (선택)</label>
           <input value={no} onChange={e=>setNo(e.target.value)} placeholder="예: 110-123-456789"
-            style={{width:"100%",background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",
-              borderRadius:8,padding:"9px 12px",color:"#fff",fontSize:13,outline:"none",boxSizing:"border-box"}}/>
+            style={{width:"100%",background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",
+              borderRadius:8,padding:"9px 12px",color:"#111827",fontSize:13,outline:"none",boxSizing:"border-box"}}/>
         </div>
         <div style={{gridColumn:"1/-1"}}>
-          <label style={{fontSize:11,color:"#6b7280",display:"block",marginBottom:8,fontWeight:600}}>색상</label>
+          <label style={{fontSize:11,color:"#9ca3af",display:"block",marginBottom:8,fontWeight:600}}>색상</label>
           <div style={{display:"flex",gap:8}}>
             {BANK_COLORS.map(c=><button key={c} onClick={()=>setColor(c)} style={{
               width:24,height:24,borderRadius:"50%",background:c,border:"none",cursor:"pointer",
-              boxShadow:color===c?`0 0 0 3px rgba(255,255,255,.15),0 0 0 5px ${c}`:"none",transition:"box-shadow .15s"}}/>)}
+              boxShadow:color===c?`0 0 0 3px rgba(0,0,0,.1),0 0 0 5px ${c}`:"none",transition:"box-shadow .15s"}}/>)}
           </div>
         </div>
       </div>
       <div style={{display:"flex",gap:10,marginTop:24}}>
         <button onClick={onClose} style={{flex:1,padding:"11px 0",borderRadius:10,cursor:"pointer",
-          background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",color:"#9ca3af",fontWeight:600,fontSize:13}}>취소</button>
+          background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",color:"#6b7280",fontWeight:600,fontSize:13}}>취소</button>
         <button onClick={()=>{if(!name.trim())return;onAdd({id:"acc_"+Date.now(),name:name.trim(),bank:bank.trim(),
           accNo:no.trim(),type,color,txs:[]});onClose();}}
           style={{flex:2,padding:"11px 0",borderRadius:10,cursor:"pointer",
-            background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",border:"none",color:"#fff",fontWeight:700,fontSize:13}}>
+            background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",border:"none",color:"#111827",fontWeight:700,fontSize:13}}>
           ✓ 등록하기
         </button>
       </div>
@@ -362,7 +362,7 @@ function AddAccModal({onAdd,onClose}){
 function TxTable({txs,onUpdate,projects=[],onTagTx}){
   const [editCell,setEditCell]=useState(null);
   const fileRefs=useRef({});
-  if(!txs.length)return <div style={{padding:"56px 0",textAlign:"center",color:"#4b5563"}}>
+  if(!txs.length)return <div style={{padding:"56px 0",textAlign:"center",color:"#9ca3af"}}>
     <div style={{fontSize:36,marginBottom:10}}>📭</div><div style={{fontSize:13}}>내역 없음</div></div>;
 
   const cols = projects.length>0
@@ -371,8 +371,8 @@ function TxTable({txs,onUpdate,projects=[],onTagTx}){
 
   return <div>
     <div style={{display:"grid",gridTemplateColumns:cols,
-      padding:"8px 14px",background:"rgba(255,255,255,.025)",borderBottom:"1px solid rgba(255,255,255,.07)",
-      fontSize:10,color:"#4b5563",fontWeight:700,letterSpacing:".05em",textTransform:"uppercase",
+      padding:"8px 14px",background:"rgba(0,0,0,.025)",borderBottom:"1px solid rgba(0,0,0,.07)",
+      fontSize:10,color:"#9ca3af",fontWeight:700,letterSpacing:".05em",textTransform:"uppercase",
       position:"sticky",top:0,zIndex:2}}>
       <div>#</div><div>날짜</div><div>거래내용</div><div>금액</div><div>계정과목</div><div>구분</div>
       {projects.length>0&&<div>프로젝트</div>}
@@ -384,13 +384,13 @@ function TxTable({txs,onUpdate,projects=[],onTagTx}){
       return <div key={t.id} style={{display:"grid",
         gridTemplateColumns:cols,
         padding:"10px 14px",alignItems:"center",
-        borderBottom:"1px solid rgba(255,255,255,.04)",
+        borderBottom:"1px solid rgba(0,0,0,.04)",
         background:i%2===0?"transparent":"rgba(255,255,255,.008)",transition:"background .1s"}}
         onMouseEnter={e=>e.currentTarget.style.background="rgba(139,92,246,.06)"}
         onMouseLeave={e=>e.currentTarget.style.background=i%2===0?"transparent":"rgba(255,255,255,.008)"}>
-        <div style={{fontSize:10,color:"#374151",textAlign:"center"}}>{i+1}</div>
-        <div style={{fontSize:12,color:"#6b7280"}}>{t.date}</div>
-        <div style={{fontSize:13,color:"#d1d5db",fontWeight:500,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",paddingRight:8}} title={t.desc}>{t.desc}</div>
+        <div style={{fontSize:10,color:"#6b7280",textAlign:"center"}}>{i+1}</div>
+        <div style={{fontSize:12,color:"#9ca3af"}}>{t.date}</div>
+        <div style={{fontSize:13,color:"#9ca3af",fontWeight:500,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",paddingRight:8}} title={t.desc}>{t.desc}</div>
         <div style={{fontSize:13,fontWeight:800,whiteSpace:"nowrap",color:t.amount>0?"#34d399":"#f87171"}}>
           {t.amount>0?"+":"-"}{fmt(Math.abs(t.amount))}원</div>
         <div>
@@ -400,7 +400,7 @@ function TxTable({txs,onUpdate,projects=[],onTagTx}){
                 onBlur={()=>setEditCell(null)}
                 style={{background:`${cc(t.category)}18`,border:`1px solid ${cc(t.category)}55`,
                   color:cc(t.category),borderRadius:20,padding:"3px 10px",fontSize:11,fontWeight:700,cursor:"pointer",outline:"none",minWidth:110}}>
-                {ACCOUNT_CATEGORIES.map(a=><option key={a} value={a} style={{background:"#1a1f2e",color:"#e5e7eb"}}>{a}</option>)}
+                {ACCOUNT_CATEGORIES.map(a=><option key={a} value={a} style={{background:"#1a1f2e",color:"#6b7280"}}>{a}</option>)}
               </select>
             : <span onClick={()=>setEditCell({id:t.id,field:"category"})} title="클릭해서 변경"
                 style={{fontSize:11,padding:"3px 10px",borderRadius:20,cursor:"pointer",fontWeight:700,
@@ -421,13 +421,13 @@ function TxTable({txs,onUpdate,projects=[],onTagTx}){
                 onBlur={e=>{onUpdate(t.id,"memo",e.target.value);setEditCell(null);}}
                 onKeyDown={e=>e.key==="Enter"&&e.target.blur()} placeholder="입력 후 Enter"
                 style={{width:"92%",background:"rgba(139,92,246,.1)",border:"1px solid rgba(139,92,246,.4)",
-                  borderRadius:6,padding:"4px 9px",color:"#e5e7eb",fontSize:12,outline:"none"}}/>
+                  borderRadius:6,padding:"4px 9px",color:"#6b7280",fontSize:12,outline:"none"}}/>
             : <span onClick={()=>setEditCell({id:t.id,field:"memo"})}
                 style={{fontSize:12,color:t.memo?"#9ca3af":"#374151",cursor:"text",padding:"4px 8px",borderRadius:6,
                   border:"1px solid transparent",display:"block",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}
                 onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(139,92,246,.3)"}
                 onMouseLeave={e=>e.currentTarget.style.borderColor="transparent"}>
-                {t.memo||<span style={{color:"#374151",fontStyle:"italic",fontSize:11}}>+ 메모</span>}
+                {t.memo||<span style={{color:"#6b7280",fontStyle:"italic",fontSize:11}}>+ 메모</span>}
               </span>}
         </div>
         <div>
@@ -438,8 +438,8 @@ function TxTable({txs,onUpdate,projects=[],onTagTx}){
                 background:"rgba(52,211,153,.1)",border:"1px solid rgba(52,211,153,.3)"}}
                 onClick={()=>fileRefs.current[t.id]?.click()} title={t.evidence.name}>📎증빙</span>
             : <button onClick={()=>fileRefs.current[t.id]?.click()}
-                style={{fontSize:10,color:"#4b5563",cursor:"pointer",padding:"3px 8px",borderRadius:6,
-                  background:"transparent",border:"1px dashed rgba(255,255,255,.12)"}}>+증빙</button>}
+                style={{fontSize:10,color:"#9ca3af",cursor:"pointer",padding:"3px 8px",borderRadius:6,
+                  background:"transparent",border:"1px dashed rgba(0,0,0,.12)"}}>+증빙</button>}
         </div>
       </div>;
     })}
@@ -476,7 +476,7 @@ function AccountPage({acc,onUpdate,onUpload,projects=[],onTagTx}){
 
   return <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
     {/* Header */}
-    <div style={{padding:"18px 22px",borderBottom:"1px solid rgba(255,255,255,.07)",
+    <div style={{padding:"18px 22px",borderBottom:"1px solid rgba(0,0,0,.07)",
       background:`linear-gradient(135deg,${acc.color}10,transparent)`,flexShrink:0}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
         <div style={{display:"flex",alignItems:"center",gap:12}}>
@@ -486,11 +486,11 @@ function AccountPage({acc,onUpdate,onUpload,projects=[],onTagTx}){
           </div>
           <div>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
-              <span style={{fontSize:17,fontWeight:900,color:"#fff"}}>{acc.name}</span>
+              <span style={{fontSize:17,fontWeight:900,color:"#111827"}}>{acc.name}</span>
               <span style={{fontSize:10,padding:"2px 9px",borderRadius:20,fontWeight:700,
                 background:`${acc.color}20`,color:acc.color}}>{TNAME[acc.type]||"계좌"}</span>
             </div>
-            {acc.bank&&<div style={{fontSize:11,color:"#6b7280",marginTop:2}}>{acc.bank}{acc.accNo&&` · ${acc.accNo}`}</div>}
+            {acc.bank&&<div style={{fontSize:11,color:"#9ca3af",marginTop:2}}>{acc.bank}{acc.accNo&&` · ${acc.accNo}`}</div>}
           </div>
         </div>
         <div style={{display:"flex",gap:8,alignItems:"center"}}>
@@ -512,37 +512,37 @@ function AccountPage({acc,onUpdate,onUpload,projects=[],onTagTx}){
           {l:"총 지출",v:`${fmtW(txs.filter(t=>t.amount<0).reduce((s,t)=>s+Math.abs(t.amount),0))}원`,c:"#f87171"},
           {l:"미확인",v:`${txs.filter(t=>t.category==="미확인").length}건`,c:"#fb923c"},
         ].map(s=><div key={s.l} style={{padding:"7px 13px",borderRadius:8,
-          background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.07)"}}>
-          <div style={{fontSize:9,color:"#4b5563",textTransform:"uppercase",letterSpacing:".05em",marginBottom:2}}>{s.l}</div>
+          background:"rgba(0,0,0,.04)",border:"1px solid rgba(0,0,0,.07)"}}>
+          <div style={{fontSize:9,color:"#9ca3af",textTransform:"uppercase",letterSpacing:".05em",marginBottom:2}}>{s.l}</div>
           <div style={{fontSize:13,fontWeight:800,color:s.c}}>{s.v}</div>
         </div>)}
       </div>
     </div>
     {/* Filters */}
-    <div style={{padding:"10px 14px",borderBottom:"1px solid rgba(255,255,255,.06)",
+    <div style={{padding:"10px 14px",borderBottom:"1px solid rgba(0,0,0,.04)",
       display:"flex",flexDirection:"column",gap:8,flexShrink:0}}>
       <div style={{display:"flex",gap:5,flexWrap:"wrap",alignItems:"center"}}>
-        <span style={{fontSize:11,color:"#4b5563",fontWeight:600,marginRight:2}}>기간</span>
+        <span style={{fontSize:11,color:"#9ca3af",fontWeight:600,marginRight:2}}>기간</span>
         {QRANGE.map(q=><button key={q.l} onClick={q.fn} style={{padding:"4px 10px",borderRadius:7,fontSize:11,
-          fontWeight:600,cursor:"pointer",background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",color:"#9ca3af"}}>{q.l}</button>)}
+          fontWeight:600,cursor:"pointer",background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",color:"#6b7280"}}>{q.l}</button>)}
         <input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)}
-          style={{marginLeft:8,background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.12)",
-            borderRadius:7,padding:"4px 10px",color:"#e5e7eb",fontSize:11,outline:"none"}}/>
-        <span style={{color:"#4b5563",fontSize:11}}>~</span>
+          style={{marginLeft:8,background:"rgba(0,0,0,.04)",border:"1px solid rgba(0,0,0,.12)",
+            borderRadius:7,padding:"4px 10px",color:"#6b7280",fontSize:11,outline:"none"}}/>
+        <span style={{color:"#9ca3af",fontSize:11}}>~</span>
         <input type="date" value={dateTo} onChange={e=>setDateTo(e.target.value)}
-          style={{background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.12)",
-            borderRadius:7,padding:"4px 10px",color:"#e5e7eb",fontSize:11,outline:"none"}}/>
+          style={{background:"rgba(0,0,0,.04)",border:"1px solid rgba(0,0,0,.12)",
+            borderRadius:7,padding:"4px 10px",color:"#6b7280",fontSize:11,outline:"none"}}/>
       </div>
       <div style={{display:"flex",gap:7,alignItems:"center",flexWrap:"wrap"}}>
         {["전체","입금","출금"].map(tp=><button key={tp} onClick={()=>setTypeF(tp)} style={{
           padding:"4px 12px",borderRadius:20,fontSize:11,fontWeight:600,cursor:"pointer",
-          border:`1px solid ${typeF===tp?(tp==="입금"?"#34d399":tp==="출금"?"#f87171":"#8b5cf6"):"rgba(255,255,255,.1)"}`,
+          border:`1px solid ${typeF===tp?(tp==="입금"?"#34d399":tp==="출금"?"#f87171":"#8b5cf6"):"rgba(0,0,0,.1)"}`,
           background:typeF===tp?(tp==="입금"?"rgba(52,211,153,.15)":tp==="출금"?"rgba(248,113,113,.15)":"rgba(139,92,246,.15)"):"transparent",
           color:typeF===tp?(tp==="입금"?"#34d399":tp==="출금"?"#f87171":"#a78bfa"):"#6b7280"}}>{tp}</button>)}
         <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="🔍 검색"
-          style={{marginLeft:"auto",background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.09)",
-            borderRadius:8,padding:"5px 11px",color:"#e5e7eb",fontSize:12,outline:"none",width:180}}/>
-        <span style={{fontSize:11,color:"#4b5563"}}>{filtered.length}건</span>
+          style={{marginLeft:"auto",background:"rgba(0,0,0,.05)",border:"1px solid rgba(255,255,255,.09)",
+            borderRadius:8,padding:"5px 11px",color:"#6b7280",fontSize:12,outline:"none",width:180}}/>
+        <span style={{fontSize:11,color:"#9ca3af"}}>{filtered.length}건</span>
         <button onClick={()=>exportTx(filtered,acc.name)} style={{padding:"5px 11px",borderRadius:7,fontSize:11,
           fontWeight:600,cursor:"pointer",background:"rgba(16,185,129,.1)",border:"1px solid rgba(16,185,129,.3)",color:"#34d399",whiteSpace:"nowrap"}}>📥 엑셀</button>
       </div>
@@ -552,7 +552,7 @@ function AccountPage({acc,onUpdate,onUpload,projects=[],onTagTx}){
       <TxTable txs={filtered} onUpdate={(id,field,val)=>onUpdate(acc.id,id,field,val)} projects={projects} onTagTx={onTagTx?((txId,projId)=>onTagTx(acc.id,txId,projId)):null}/>
     </div>
     {/* Footer */}
-    <div style={{padding:"8px 14px",borderTop:"1px solid rgba(255,255,255,.07)",
+    <div style={{padding:"8px 14px",borderTop:"1px solid rgba(0,0,0,.07)",
       display:"flex",justifyContent:"space-between",fontSize:12,
       background:"rgba(255,255,255,.015)",flexShrink:0}}>
       <div style={{display:"flex",gap:18}}>
@@ -560,7 +560,7 @@ function AccountPage({acc,onUpdate,onUpload,projects=[],onTagTx}){
         <span>출금: <strong style={{color:"#f87171"}}>{fmt(totOut)}원</strong></span>
         <span>순손익: <strong style={{color:totIn>=totOut?"#60a5fa":"#fb923c"}}>{totIn>=totOut?"+":"-"}{fmt(Math.abs(totIn-totOut))}원</strong></span>
       </div>
-      <span style={{color:"#4b5563",fontSize:11}}>전체 {txs.length}건 · 표시 {filtered.length}건</span>
+      <span style={{color:"#9ca3af",fontSize:11}}>전체 {txs.length}건 · 표시 {filtered.length}건</span>
     </div>
   </div>;
 }
@@ -599,7 +599,7 @@ function printPLReport(pl, allTxs, dateFrom, dateTo, label) {
   const txRow = (t,i) => `
     <tr style="background:${i%2===0?"#ffffff":"#f9fafb"}">
       <td style="padding:5px 8px;font-size:11px;color:#6b7280;white-space:nowrap">${t.date}</td>
-      <td style="padding:5px 8px;font-size:12px;color:#111827;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.desc||""}</td>
+      <td style="padding:5px 8px;font-size:12px;color:#1f2937;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.desc||""}</td>
       <td style="padding:5px 8px;font-size:12px;color:#6b7280">${t.memo||""}</td>
       <td style="padding:5px 8px;font-size:12px;font-weight:700;text-align:right;white-space:nowrap;color:${t.amount>=0?"#059669":"#dc2626"}">${t.amount>=0?"+":""}${t.amount<0?"-":""}${fmt(Math.abs(t.amount))}원</td>
     </tr>`;
@@ -622,8 +622,8 @@ function printPLReport(pl, allTxs, dateFrom, dateTo, label) {
 <title>손익계산서 상세 리포트 · ${label}</title>
 <style>
   * { box-sizing:border-box; margin:0; padding:0; }
-  body { font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; color:#111827; background:#fff; padding:32px 40px; font-size:13px; }
-  h1 { font-size:22px; font-weight:900; color:#111827; margin-bottom:4px; }
+  body { font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif; color:#1f2937; background:#fff; padding:32px 40px; font-size:13px; }
+  h1 { font-size:22px; font-weight:900; color:#1f2937; margin-bottom:4px; }
   .subtitle { font-size:12px; color:#6b7280; margin-bottom:28px; }
   .kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:28px; }
   .kpi { padding:14px 16px; border-radius:10px; border:1.5px solid #e5e7eb; }
@@ -788,18 +788,18 @@ function PLPage({allTxs}){
     ? `${customFrom||"시작"}~${customTo||"현재"}`
     : plMonth!=="전체"?plMonth:(plYear!=="전체"?plYear+"년":"전체기간");
 
-  if(!allTxs.length) return <div style={{padding:"80px 0",textAlign:"center",color:"#4b5563"}}>
+  if(!allTxs.length) return <div style={{padding:"80px 0",textAlign:"center",color:"#9ca3af"}}>
     <div style={{fontSize:40,marginBottom:12}}>📊</div>
-    <div style={{fontSize:14,fontWeight:600,color:"#6b7280"}}>계좌를 등록하고 거래 내역을 업로드하면</div>
-    <div style={{fontSize:13,color:"#374151",marginTop:4}}>손익계산서가 자동으로 생성됩니다</div>
+    <div style={{fontSize:14,fontWeight:600,color:"#9ca3af"}}>계좌를 등록하고 거래 내역을 업로드하면</div>
+    <div style={{fontSize:13,color:"#6b7280",marginTop:4}}>손익계산서가 자동으로 생성됩니다</div>
   </div>;
 
   return <div style={{padding:"24px 28px",overflowY:"auto",height:"100%"}}>
     {/* Header */}
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:22}}>
       <div style={{flex:1}}>
-        <h2 style={{fontSize:20,fontWeight:900,color:"#fff",margin:"0 0 4px",letterSpacing:"-.03em"}}>📊 손익계산서</h2>
-        <p style={{color:"#6b7280",margin:"0 0 14px",fontSize:12}}>
+        <h2 style={{fontSize:20,fontWeight:900,color:"#111827",margin:"0 0 4px",letterSpacing:"-.03em"}}>📊 손익계산서</h2>
+        <p style={{color:"#9ca3af",margin:"0 0 14px",fontSize:12}}>
           등록된 모든 계좌·카드 거래가 자동 집계됩니다 · {allTxs.length}건 반영
         </p>
 
@@ -807,22 +807,22 @@ function PLPage({allTxs}){
         <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:10,flexWrap:"wrap"}}>
           <button onClick={()=>setUseCustom(false)} style={{
             padding:"5px 12px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",
-            background:!useCustom?"rgba(139,92,246,.2)":"rgba(255,255,255,.04)",
-            border:`1px solid ${!useCustom?"rgba(139,92,246,.5)":"rgba(255,255,255,.1)"}`,
+            background:!useCustom?"rgba(139,92,246,.2)":"rgba(0,0,0,.04)",
+            border:`1px solid ${!useCustom?"rgba(139,92,246,.5)":"rgba(0,0,0,.1)"}`,
             color:!useCustom?"#c4b5fd":"#6b7280"}}>빠른 선택</button>
           <button onClick={()=>setUseCustom(true)} style={{
             padding:"5px 12px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",
-            background:useCustom?"rgba(245,158,11,.2)":"rgba(255,255,255,.04)",
-            border:`1px solid ${useCustom?"rgba(245,158,11,.5)":"rgba(255,255,255,.1)"}`,
+            background:useCustom?"rgba(245,158,11,.2)":"rgba(0,0,0,.04)",
+            border:`1px solid ${useCustom?"rgba(245,158,11,.5)":"rgba(0,0,0,.1)"}`,
             color:useCustom?"#f59e0b":"#6b7280"}}>📅 기간 직접 설정</button>
           {useCustom&&<>
             <input type="date" value={customFrom} onChange={e=>setCustomFrom(e.target.value)}
-              style={{background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.15)",
-                borderRadius:8,padding:"5px 10px",color:"#e5e7eb",fontSize:12,outline:"none"}}/>
-            <span style={{color:"#6b7280",fontSize:13}}>~</span>
+              style={{background:"rgba(0,0,0,.04)",border:"1px solid rgba(0,0,0,.1)",
+                borderRadius:8,padding:"5px 10px",color:"#6b7280",fontSize:12,outline:"none"}}/>
+            <span style={{color:"#9ca3af",fontSize:13}}>~</span>
             <input type="date" value={customTo} onChange={e=>setCustomTo(e.target.value)}
-              style={{background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.15)",
-                borderRadius:8,padding:"5px 10px",color:"#e5e7eb",fontSize:12,outline:"none"}}/>
+              style={{background:"rgba(0,0,0,.04)",border:"1px solid rgba(0,0,0,.1)",
+                borderRadius:8,padding:"5px 10px",color:"#6b7280",fontSize:12,outline:"none"}}/>
           </>}
         </div>
 
@@ -845,7 +845,7 @@ function PLPage({allTxs}){
         </button>
         <button onClick={()=>printPLReport(pl,allTxs,useCustom?customFrom:(plYear!=="전체"?plYear+"-01-01":""),useCustom?customTo:(plYear!=="전체"?plYear+"-12-31":""),label)}
           style={{padding:"8px 16px",borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer",
-            background:"linear-gradient(135deg,#7c3aed,#5b21b6)",border:"none",color:"#fff",
+            background:"linear-gradient(135deg,#7c3aed,#5b21b6)",border:"none",color:"#111827",
             whiteSpace:"nowrap",boxShadow:"0 4px 14px rgba(124,58,237,.4)"}}>
           🖨 상세 리포트 출력
         </button>
@@ -860,8 +860,8 @@ function PLPage({allTxs}){
         {l:"영업이익",v:pl.operatingProfit,c:pl.operatingProfit>=0?"#a78bfa":"#f87171",sub:`이익률 ${pct(pl.opMargin)}`},
         {l:"판매관리비",v:-pl.totalSGA,c:"#fb923c"},
       ].map(k=><div key={k.l} style={{padding:"15px 18px",borderRadius:12,
-        background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.07)"}}>
-        <div style={{fontSize:10,color:"#6b7280",marginBottom:5,textTransform:"uppercase",letterSpacing:".05em"}}>{k.l}</div>
+        background:"rgba(0,0,0,.03)",border:"1px solid rgba(0,0,0,.07)"}}>
+        <div style={{fontSize:10,color:"#9ca3af",marginBottom:5,textTransform:"uppercase",letterSpacing:".05em"}}>{k.l}</div>
         <div style={{fontSize:20,fontWeight:900,color:k.c,letterSpacing:"-.02em"}}>
           {k.v>=0?"+":""}{fmtW(Math.abs(k.v))}원
         </div>
@@ -871,10 +871,10 @@ function PLPage({allTxs}){
 
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:18,marginBottom:18}}>
       {/* P&L Statement */}
-      <div style={{background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.07)",borderRadius:14,overflow:"hidden"}}>
-        <div style={{padding:"13px 20px",borderBottom:"1px solid rgba(255,255,255,.07)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-          <span style={{fontSize:13,fontWeight:700,color:"#fff"}}>손익 계산 내역</span>
-          <span style={{fontSize:10,color:"#4b5563"}}>{label}</span>
+      <div style={{background:"rgba(0,0,0,.025)",border:"1px solid rgba(0,0,0,.07)",borderRadius:14,overflow:"hidden"}}>
+        <div style={{padding:"13px 20px",borderBottom:"1px solid rgba(0,0,0,.07)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <span style={{fontSize:13,fontWeight:700,color:"#111827"}}>손익 계산 내역</span>
+          <span style={{fontSize:10,color:"#9ca3af"}}>{label}</span>
         </div>
         <PLRow label="Ⅰ. 매출액"    value={pl.revenue}      bold color="#34d399"/>
         <PLRow label="Ⅱ. 매출원가"  value={-pl.cogs}        bold color="#f87171"/>
@@ -889,11 +889,11 @@ function PLPage({allTxs}){
       </div>
 
       {/* Monthly trend chart */}
-      <div style={{background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.07)",borderRadius:14,padding:20}}>
-        <div style={{fontSize:13,fontWeight:700,color:"#fff",marginBottom:4}}>월별 매출·영업이익 추이</div>
-        <div style={{fontSize:11,color:"#4b5563",marginBottom:16}}>최근 12개월</div>
+      <div style={{background:"rgba(0,0,0,.025)",border:"1px solid rgba(0,0,0,.07)",borderRadius:14,padding:20}}>
+        <div style={{fontSize:13,fontWeight:700,color:"#111827",marginBottom:4}}>월별 매출·영업이익 추이</div>
+        <div style={{fontSize:11,color:"#9ca3af",marginBottom:16}}>최근 12개월</div>
         {trend.length===0
-          ? <div style={{color:"#374151",fontSize:12,textAlign:"center",paddingTop:40}}>데이터 없음</div>
+          ? <div style={{color:"#6b7280",fontSize:12,textAlign:"center",paddingTop:40}}>데이터 없음</div>
           : <>
             <div style={{display:"flex",gap:4,alignItems:"flex-end",height:140,marginBottom:8}}>
               {trend.map(m=>{
@@ -907,13 +907,13 @@ function PLPage({allTxs}){
                       height:`${Math.abs(m.op)/maxRev*80}px`,
                       background:opPositive?"rgba(139,92,246,.65)":"rgba(248,113,113,.5)"}}/>}
                   </div>
-                  <span style={{fontSize:8,color:"#374151",whiteSpace:"nowrap"}}>{m.m.slice(5)}월</span>
+                  <span style={{fontSize:8,color:"#6b7280",whiteSpace:"nowrap"}}>{m.m.slice(5)}월</span>
                 </div>;
               })}
             </div>
             <div style={{display:"flex",gap:14}}>
               {[{c:"rgba(52,211,153,.55)",l:"매출"},{c:"rgba(139,92,246,.65)",l:"영업이익"}].map(x=><div key={x.l} style={{display:"flex",alignItems:"center",gap:5}}>
-                <div style={{width:10,height:10,borderRadius:2,background:x.c}}/><span style={{fontSize:10,color:"#6b7280"}}>{x.l}</span>
+                <div style={{width:10,height:10,borderRadius:2,background:x.c}}/><span style={{fontSize:10,color:"#9ca3af"}}>{x.l}</span>
               </div>)}
             </div>
           </>}
@@ -921,8 +921,8 @@ function PLPage({allTxs}){
     </div>
 
     {/* SGA breakdown */}
-    {Object.keys(pl.sgaByLabel).length>0&&<div style={{background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.07)",borderRadius:14,padding:20}}>
-      <div style={{fontSize:13,fontWeight:700,color:"#fff",marginBottom:16}}>판매관리비 상세 (계정별)</div>
+    {Object.keys(pl.sgaByLabel).length>0&&<div style={{background:"rgba(0,0,0,.025)",border:"1px solid rgba(0,0,0,.07)",borderRadius:14,padding:20}}>
+      <div style={{fontSize:13,fontWeight:700,color:"#111827",marginBottom:16}}>판매관리비 상세 (계정별)</div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(180px,1fr))",gap:10}}>
         {Object.entries(pl.sgaByLabel).sort((a,b)=>b[1]-a[1]).map(([lbl,v])=>{
           const cat=Object.keys(ACC_MAP).find(k=>ACC_MAP[k].label===lbl)||lbl;
@@ -930,9 +930,9 @@ function PLPage({allTxs}){
           return <div key={lbl} style={{padding:"12px 14px",borderRadius:10,
             background:`${cc(cat)}0e`,border:`1px solid ${cc(cat)}25`}}>
             <div style={{fontSize:11,color:cc(cat),fontWeight:600,marginBottom:5}}>{lbl}</div>
-            <div style={{fontSize:16,fontWeight:800,color:"#fff"}}>{fmtW(v)}원</div>
-            <div style={{fontSize:10,color:"#4b5563",marginTop:3}}>{share.toFixed(1)}% of 판관비</div>
-            <div style={{height:3,borderRadius:2,marginTop:6,background:"rgba(255,255,255,.07)"}}>
+            <div style={{fontSize:16,fontWeight:800,color:"#111827"}}>{fmtW(v)}원</div>
+            <div style={{fontSize:10,color:"#9ca3af",marginTop:3}}>{share.toFixed(1)}% of 판관비</div>
+            <div style={{height:3,borderRadius:2,marginTop:6,background:"rgba(0,0,0,.07)"}}>
               <div style={{height:"100%",borderRadius:2,width:`${share}%`,background:cc(cat)}}/>
             </div>
           </div>;
@@ -954,17 +954,17 @@ function BSPage({allTxs,accounts}){
   const totalL=bs.liabilities.current.reduce((s,r)=>s+r.value,0);
   const totalE=bs.equity.reduce((s,r)=>s+r.value,0);
 
-  if(!allTxs.length) return <div style={{padding:"80px 0",textAlign:"center",color:"#4b5563"}}>
+  if(!allTxs.length) return <div style={{padding:"80px 0",textAlign:"center",color:"#9ca3af"}}>
     <div style={{fontSize:40,marginBottom:12}}>📋</div>
-    <div style={{fontSize:14,fontWeight:600,color:"#6b7280"}}>거래 내역을 업로드하면</div>
-    <div style={{fontSize:13,color:"#374151",marginTop:4}}>재무상태표가 자동 생성됩니다</div>
+    <div style={{fontSize:14,fontWeight:600,color:"#9ca3af"}}>거래 내역을 업로드하면</div>
+    <div style={{fontSize:13,color:"#6b7280",marginTop:4}}>재무상태표가 자동 생성됩니다</div>
   </div>;
 
   return <div style={{padding:"24px 28px",overflowY:"auto",height:"100%"}}>
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:22}}>
       <div>
-        <h2 style={{fontSize:20,fontWeight:900,color:"#fff",margin:"0 0 4px",letterSpacing:"-.03em"}}>📋 재무상태표</h2>
-        <p style={{color:"#6b7280",margin:"0 0 12px",fontSize:12}}>
+        <h2 style={{fontSize:20,fontWeight:900,color:"#111827",margin:"0 0 4px",letterSpacing:"-.03em"}}>📋 재무상태표</h2>
+        <p style={{color:"#9ca3af",margin:"0 0 12px",fontSize:12}}>
           ※ 업로드 거래 기반 추정치입니다. 확정 재무제표는 공인회계사 검토가 필요합니다.
         </p>
         <div style={{display:"flex",gap:5}}>
@@ -978,8 +978,8 @@ function BSPage({allTxs,accounts}){
     <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12,marginBottom:22}}>
       {[{l:"총 자산",v:totalA,c:"#60a5fa"},{l:"총 부채",v:totalL,c:"#f87171"},{l:"순 자산(자본)",v:totalE,c:"#34d399"}].map(k=>(
         <div key={k.l} style={{padding:"15px 18px",borderRadius:12,
-          background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.07)"}}>
-          <div style={{fontSize:10,color:"#6b7280",marginBottom:5,textTransform:"uppercase",letterSpacing:".05em"}}>{k.l}</div>
+          background:"rgba(0,0,0,.03)",border:"1px solid rgba(0,0,0,.07)"}}>
+          <div style={{fontSize:10,color:"#9ca3af",marginBottom:5,textTransform:"uppercase",letterSpacing:".05em"}}>{k.l}</div>
           <div style={{fontSize:22,fontWeight:900,color:k.c,letterSpacing:"-.02em"}}>{fmtW(k.v)}원</div>
         </div>
       ))}
@@ -991,7 +991,7 @@ function BSPage({allTxs,accounts}){
         <div style={{fontSize:12,fontWeight:700,color:"#60a5fa",marginBottom:10,
           display:"flex",alignItems:"center",gap:6}}>
           <span>자산</span>
-          <span style={{fontSize:11,color:"#4b5563",fontWeight:400}}>총 {fmt(totalA)}원</span>
+          <span style={{fontSize:11,color:"#9ca3af",fontWeight:400}}>총 {fmt(totalA)}원</span>
         </div>
         <BSSection title="Ⅰ. 유동자산" color="#60a5fa"
           items={bs.assets.current}
@@ -1011,7 +1011,7 @@ function BSPage({allTxs,accounts}){
         <div style={{fontSize:12,fontWeight:700,color:"#f87171",marginBottom:10,
           display:"flex",alignItems:"center",gap:6}}>
           <span>부채 + 자본</span>
-          <span style={{fontSize:11,color:"#4b5563",fontWeight:400}}>총 {fmt(totalL+totalE)}원</span>
+          <span style={{fontSize:11,color:"#9ca3af",fontWeight:400}}>총 {fmt(totalL+totalE)}원</span>
         </div>
         <BSSection title="Ⅰ. 유동부채" color="#f87171"
           items={bs.liabilities.current}
@@ -1030,7 +1030,7 @@ function BSPage({allTxs,accounts}){
           <div style={{fontSize:11,fontWeight:700,color:Math.abs(totalA-(totalL+totalE))<1000?"#34d399":"#fb923c"}}>
             {Math.abs(totalA-(totalL+totalE))<1000?"✓ 대차평균 균형":"⚠ 추정치 기반 (오차 있음)"}
           </div>
-          <div style={{fontSize:10,color:"#6b7280",marginTop:2}}>자산 - (부채+자본) = {fmt(totalA-totalL-totalE)}원</div>
+          <div style={{fontSize:10,color:"#9ca3af",marginTop:2}}>자산 - (부채+자본) = {fmt(totalA-totalL-totalE)}원</div>
         </div>
       </div>
     </div>
@@ -1137,42 +1137,42 @@ function ClientModal({ client, onSave, onClose }) {
   };
 
   return (
-    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.8)",zIndex:500,
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:500,
       display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={onClose}>
       <div onClick={e=>e.stopPropagation()} style={{
-        background:"#131826",border:"1px solid rgba(96,165,250,.3)",borderRadius:20,
+        background:"#ffffff",border:"1px solid rgba(96,165,250,.3)",borderRadius:20,
         width:620,maxHeight:"88vh",display:"flex",flexDirection:"column",
-        boxShadow:"0 32px 80px rgba(0,0,0,.7)"}}>
+        boxShadow:"0 32px 80px rgba(0,0,0,.15)"}}>
 
-        <div style={{padding:"18px 24px",borderBottom:"1px solid rgba(255,255,255,.07)",
+        <div style={{padding:"18px 24px",borderBottom:"1px solid rgba(0,0,0,.07)",
           display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
           <div>
-            <div style={{fontSize:15,fontWeight:900,color:"#fff"}}>{client?"✏️ 거래처 수정":"🏢 거래처 등록"}</div>
-            <div style={{fontSize:11,color:"#6b7280",marginTop:2}}>사업자 정보 입력</div>
+            <div style={{fontSize:15,fontWeight:900,color:"#111827"}}>{client?"✏️ 거래처 수정":"🏢 거래처 등록"}</div>
+            <div style={{fontSize:11,color:"#9ca3af",marginTop:2}}>사업자 정보 입력</div>
           </div>
-          <button onClick={onClose} style={{background:"none",border:"none",color:"#6b7280",fontSize:20,cursor:"pointer"}}>✕</button>
+          <button onClick={onClose} style={{background:"none",border:"none",color:"#9ca3af",fontSize:20,cursor:"pointer"}}>✕</button>
         </div>
 
         <div style={{flex:1,overflowY:"auto",padding:"20px 24px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:13}}>
           {/* 사업자번호 */}
           <div style={{display:"flex",flexDirection:"column",gap:5}}>
-            <label style={{fontSize:11,color:"#6b7280",fontWeight:600}}>사업자등록번호</label>
+            <label style={{fontSize:11,color:"#9ca3af",fontWeight:600}}>사업자등록번호</label>
             <input value={form.bizNo} onChange={e=>set("bizNo",fmtBizNo(e.target.value))}
               placeholder="123-45-67890" maxLength={12}
-              style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",
-                borderRadius:8,padding:"8px 12px",color:"#fff",fontSize:13,outline:"none"}}/>
+              style={{background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",
+                borderRadius:8,padding:"8px 12px",color:"#111827",fontSize:13,outline:"none"}}/>
           </div>
 
           {/* 거래유형 */}
           <div style={{display:"flex",flexDirection:"column",gap:5}}>
-            <label style={{fontSize:11,color:"#6b7280",fontWeight:600}}>거래 유형</label>
+            <label style={{fontSize:11,color:"#9ca3af",fontWeight:600}}>거래 유형</label>
             <div style={{display:"flex",gap:6}}>
               {Object.entries(CLIENT_TYPE_META).map(([v,m])=>(
                 <button key={v} onClick={()=>set("type",v)} style={{
                   flex:1,padding:"8px 4px",borderRadius:8,cursor:"pointer",fontSize:10,fontWeight:700,
-                  background:form.type===v?`${m.color}20`:"rgba(255,255,255,.04)",
-                  border:`1px solid ${form.type===v?`${m.color}60`:"rgba(255,255,255,.1)"}`,
-                  color:form.type===v?m.color:"#6b7280"}}>
+                  background:form.type===v?`${m.color}20`:"rgba(0,0,0,.04)",
+                  border:`1px solid ${form.type===v?`${m.color}60`:"rgba(0,0,0,.1)"}`,
+                  color:form.type===v?m.color:"#9ca3af"}}>
                   {m.icon} {m.short}
                 </button>
               ))}
@@ -1193,24 +1193,24 @@ function ClientModal({ client, onSave, onClose }) {
           ].map(f=>(
             <div key={f.k} style={{display:"flex",flexDirection:"column",gap:5,
               ...(f.span===2?{gridColumn:"1/-1"}:{})}}>
-              <label style={{fontSize:11,color:"#6b7280",fontWeight:600}}>{f.l}</label>
+              <label style={{fontSize:11,color:"#9ca3af",fontWeight:600}}>{f.l}</label>
               <input value={form[f.k]||""} onChange={e=>set(f.k,e.target.value)} placeholder={f.p}
-                style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",
-                  borderRadius:8,padding:"8px 12px",color:"#fff",fontSize:13,outline:"none"}}/>
+                style={{background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",
+                  borderRadius:8,padding:"8px 12px",color:"#111827",fontSize:13,outline:"none"}}/>
             </div>
           ))}
         </div>
 
-        <div style={{padding:"14px 24px",borderTop:"1px solid rgba(255,255,255,.07)",
+        <div style={{padding:"14px 24px",borderTop:"1px solid rgba(0,0,0,.07)",
           display:"flex",justifyContent:"flex-end",gap:10,flexShrink:0}}>
           <button onClick={onClose} style={{padding:"9px 20px",borderRadius:9,cursor:"pointer",
-            background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",
-            color:"#9ca3af",fontWeight:600,fontSize:13}}>취소</button>
+            background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",
+            color:"#6b7280",fontWeight:600,fontSize:13}}>취소</button>
           <button onClick={()=>onSave({...form,id:form.id||"client_"+Date.now()})}
             disabled={!form.name} style={{padding:"9px 24px",borderRadius:9,
             cursor:form.name?"pointer":"not-allowed",
             background:form.name?"linear-gradient(135deg,#3b82f6,#1d4ed8)":"#374151",
-            border:"none",color:"#fff",fontWeight:700,fontSize:13,opacity:form.name?1:.5}}>
+            border:"none",color:"#111827",fontWeight:700,fontSize:13,opacity:form.name?1:.5}}>
             ✓ 저장
           </button>
         </div>
@@ -1246,19 +1246,19 @@ function ClientUploadModal({ onImport, onClose }) {
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.82)",zIndex:500,
       display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={onClose}>
       <div onClick={e=>e.stopPropagation()} style={{
-        background:"#131826",border:"1px solid rgba(96,165,250,.3)",borderRadius:20,
+        background:"#ffffff",border:"1px solid rgba(96,165,250,.3)",borderRadius:20,
         width:860,maxHeight:"88vh",display:"flex",flexDirection:"column",
-        boxShadow:"0 32px 80px rgba(0,0,0,.7)"}}>
+        boxShadow:"0 32px 80px rgba(0,0,0,.15)"}}>
 
-        <div style={{padding:"18px 24px",borderBottom:"1px solid rgba(255,255,255,.07)",
+        <div style={{padding:"18px 24px",borderBottom:"1px solid rgba(0,0,0,.07)",
           display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
           <div>
-            <div style={{fontSize:15,fontWeight:900,color:"#fff"}}>📂 거래처 엑셀 일괄 등록</div>
-            <div style={{fontSize:11,color:"#6b7280",marginTop:2}}>
+            <div style={{fontSize:15,fontWeight:900,color:"#111827"}}>📂 거래처 엑셀 일괄 등록</div>
+            <div style={{fontSize:11,color:"#9ca3af",marginTop:2}}>
               국세청 홈택스 엑셀 또는 직접 작성한 거래처 목록 업로드
             </div>
           </div>
-          <button onClick={onClose} style={{background:"none",border:"none",color:"#6b7280",fontSize:20,cursor:"pointer"}}>✕</button>
+          <button onClick={onClose} style={{background:"none",border:"none",color:"#9ca3af",fontSize:20,cursor:"pointer"}}>✕</button>
         </div>
 
         <div style={{flex:1,overflowY:"auto",padding:"20px 24px"}}>
@@ -1270,10 +1270,10 @@ function ClientUploadModal({ onImport, onClose }) {
                 style={{border:"2px dashed rgba(96,165,250,.4)",borderRadius:16,padding:"44px 24px",
                   textAlign:"center",cursor:"pointer",background:"rgba(96,165,250,.04)"}}>
                 <div style={{fontSize:36,marginBottom:10}}>🏢</div>
-                <div style={{fontSize:14,fontWeight:700,color:"#fff",marginBottom:6}}>
+                <div style={{fontSize:14,fontWeight:700,color:"#111827",marginBottom:6}}>
                   거래처 파일을 드래그하거나 클릭하세요
                 </div>
-                <div style={{fontSize:12,color:"#6b7280"}}>.xlsx / .xls / .csv 지원</div>
+                <div style={{fontSize:12,color:"#9ca3af"}}>.xlsx / .xls / .csv 지원</div>
                 {loading&&<div style={{fontSize:12,color:"#60a5fa",marginTop:8}}>⏳ 파싱 중...</div>}
                 {error&&<div style={{fontSize:12,color:"#f87171",marginTop:8}}>⚠ {error}</div>}
               </div>
@@ -1300,13 +1300,13 @@ function ClientUploadModal({ onImport, onClose }) {
                     {l:"비고 / 메모",r:"선택"},
                   ].map(c=>(
                     <div key={c.l} style={{padding:"6px 10px",borderRadius:7,
-                      background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.07)"}}>
-                      <div style={{fontSize:11,color:"#e5e7eb",fontWeight:600}}>{c.l}</div>
-                      <div style={{fontSize:9,color:"#6b7280",marginTop:1}}>{c.r}</div>
+                      background:"rgba(0,0,0,.04)",border:"1px solid rgba(0,0,0,.07)"}}>
+                      <div style={{fontSize:11,color:"#6b7280",fontWeight:600}}>{c.l}</div>
+                      <div style={{fontSize:9,color:"#9ca3af",marginTop:1}}>{c.r}</div>
                     </div>
                   ))}
                 </div>
-                <div style={{marginTop:10,fontSize:11,color:"#6b7280"}}>
+                <div style={{marginTop:10,fontSize:11,color:"#9ca3af"}}>
                   ※ 홈택스 → 세금계산서 → 거래처 관리 → 엑셀 저장 포맷을 그대로 업로드하면 됩니다
                 </div>
               </div>
@@ -1314,15 +1314,15 @@ function ClientUploadModal({ onImport, onClose }) {
           ) : (
             <>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-                <div style={{fontSize:13,fontWeight:700,color:"#fff"}}>
+                <div style={{fontSize:13,fontWeight:700,color:"#111827"}}>
                   ✅ {parsed.length}개 거래처 파싱 완료
                 </div>
                 <div style={{display:"flex",gap:10,alignItems:"center"}}>
                   <button onClick={()=>setSelected(new Set(parsed.map(c=>c.id)))}
                     style={{fontSize:11,color:"#60a5fa",background:"none",border:"none",cursor:"pointer",textDecoration:"underline"}}>전체선택</button>
                   <button onClick={()=>setSelected(new Set())}
-                    style={{fontSize:11,color:"#6b7280",background:"none",border:"none",cursor:"pointer",textDecoration:"underline"}}>전체해제</button>
-                  <span style={{fontSize:11,color:"#6b7280"}}>{selected.size}개 선택</span>
+                    style={{fontSize:11,color:"#9ca3af",background:"none",border:"none",cursor:"pointer",textDecoration:"underline"}}>전체해제</button>
+                  <span style={{fontSize:11,color:"#9ca3af"}}>{selected.size}개 선택</span>
                 </div>
               </div>
 
@@ -1336,7 +1336,7 @@ function ClientUploadModal({ onImport, onClose }) {
                     <div style={{fontSize:11,fontWeight:700,color:meta.color,marginBottom:8,
                       display:"flex",alignItems:"center",gap:6}}>
                       <span>{meta.icon}</span><span>{meta.label}</span>
-                      <span style={{fontSize:10,color:"#4b5563"}}>({group.length}개)</span>
+                      <span style={{fontSize:10,color:"#9ca3af"}}>({group.length}개)</span>
                     </div>
                     <div style={{display:"flex",flexDirection:"column",gap:4}}>
                       {group.map(c=>{
@@ -1346,22 +1346,22 @@ function ClientUploadModal({ onImport, onClose }) {
                             display:"grid",gridTemplateColumns:"24px 180px 120px 120px 1fr 120px",
                             alignItems:"center",gap:10,padding:"9px 12px",borderRadius:9,cursor:"pointer",
                             background:isSel?`${meta.color}0d`:"rgba(255,255,255,.02)",
-                            border:`1px solid ${isSel?`${meta.color}35`:"rgba(255,255,255,.06)"}`,
+                            border:`1px solid ${isSel?`${meta.color}35`:"rgba(0,0,0,.04)"}`,
                             transition:"all .1s"}}>
                             <div style={{width:14,height:14,borderRadius:4,
-                              border:`2px solid ${isSel?meta.color:"#374151"}`,
+                              border:`2px solid ${isSel?meta.color:"#6b7280"}`,
                               background:isSel?meta.color:"transparent",
                               display:"flex",alignItems:"center",justifyContent:"center"}}>
-                              {isSel&&<span style={{fontSize:9,color:"#fff",lineHeight:1}}>✓</span>}
+                              {isSel&&<span style={{fontSize:9,color:"#111827",lineHeight:1}}>✓</span>}
                             </div>
                             <div>
-                              <div style={{fontSize:12,fontWeight:700,color:"#e5e7eb"}}>{c.name}</div>
-                              <div style={{fontSize:10,color:"#6b7280"}}>{c.bizNo||"번호없음"}</div>
+                              <div style={{fontSize:12,fontWeight:700,color:"#6b7280"}}>{c.name}</div>
+                              <div style={{fontSize:10,color:"#9ca3af"}}>{c.bizNo||"번호없음"}</div>
                             </div>
-                            <div style={{fontSize:11,color:"#9ca3af"}}>{c.ceoName||"-"}</div>
-                            <div style={{fontSize:10,color:"#6b7280"}}>{c.bizType||"-"}</div>
-                            <div style={{fontSize:10,color:"#6b7280",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.addr||"-"}</div>
-                            <div style={{fontSize:10,color:"#6b7280"}}>{c.tel||c.email||"-"}</div>
+                            <div style={{fontSize:11,color:"#6b7280"}}>{c.ceoName||"-"}</div>
+                            <div style={{fontSize:10,color:"#9ca3af"}}>{c.bizType||"-"}</div>
+                            <div style={{fontSize:10,color:"#9ca3af",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.addr||"-"}</div>
+                            <div style={{fontSize:10,color:"#9ca3af"}}>{c.tel||c.email||"-"}</div>
                           </div>
                         );
                       })}
@@ -1370,7 +1370,7 @@ function ClientUploadModal({ onImport, onClose }) {
                 );
               })}
               <button onClick={()=>{setParsed(null);setError("");}}
-                style={{marginTop:8,fontSize:11,color:"#6b7280",cursor:"pointer",
+                style={{marginTop:8,fontSize:11,color:"#9ca3af",cursor:"pointer",
                   background:"none",border:"none",textDecoration:"underline"}}>
                 ← 다시 업로드
               </button>
@@ -1378,16 +1378,16 @@ function ClientUploadModal({ onImport, onClose }) {
           )}
         </div>
 
-        <div style={{padding:"14px 24px",borderTop:"1px solid rgba(255,255,255,.07)",
+        <div style={{padding:"14px 24px",borderTop:"1px solid rgba(0,0,0,.07)",
           display:"flex",justifyContent:"flex-end",gap:10,flexShrink:0}}>
           <button onClick={onClose} style={{padding:"9px 20px",borderRadius:9,cursor:"pointer",
-            background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",
-            color:"#9ca3af",fontWeight:600,fontSize:13}}>취소</button>
+            background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",
+            color:"#6b7280",fontWeight:600,fontSize:13}}>취소</button>
           {parsed&&<button onClick={()=>{onImport(parsed.filter(c=>selected.has(c.id)));onClose();}}
             disabled={!selected.size}
             style={{padding:"9px 24px",borderRadius:9,cursor:selected.size?"pointer":"not-allowed",
               background:selected.size?"linear-gradient(135deg,#3b82f6,#1d4ed8)":"#374151",
-              border:"none",color:"#fff",fontWeight:700,fontSize:13,opacity:selected.size?1:.5}}>
+              border:"none",color:"#111827",fontWeight:700,fontSize:13,opacity:selected.size?1:.5}}>
             ✓ {selected.size}개 등록
           </button>}
         </div>
@@ -1463,13 +1463,13 @@ function ClientsPage({ clients, allTxs, onSave, onDelete, onUpload }) {
       {/* 거래처 목록 패널 */}
       <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
         {/* 헤더 */}
-        <div style={{padding:"18px 24px 14px",flexShrink:0,borderBottom:"1px solid rgba(255,255,255,.06)"}}>
+        <div style={{padding:"18px 24px 14px",flexShrink:0,borderBottom:"1px solid rgba(0,0,0,.04)"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
             <div>
-              <h2 style={{fontSize:18,fontWeight:900,color:"#fff",margin:"0 0 3px",letterSpacing:"-.03em"}}>
+              <h2 style={{fontSize:18,fontWeight:900,color:"#111827",margin:"0 0 3px",letterSpacing:"-.03em"}}>
                 🏢 거래처 관리
               </h2>
-              <p style={{color:"#6b7280",margin:0,fontSize:12}}>
+              <p style={{color:"#9ca3af",margin:0,fontSize:12}}>
                 총 {clients.length}개 거래처 · 거래내역 자동 연동
               </p>
             </div>
@@ -1481,7 +1481,7 @@ function ClientsPage({ clients, allTxs, onSave, onDelete, onUpload }) {
               </button>
               <button onClick={()=>setEditModal("new")} style={{
                 padding:"8px 14px",borderRadius:9,fontSize:12,fontWeight:700,cursor:"pointer",
-                background:"linear-gradient(135deg,#3b82f6,#1d4ed8)",border:"none",color:"#fff"}}>
+                background:"linear-gradient(135deg,#3b82f6,#1d4ed8)",border:"none",color:"#111827"}}>
                 + 거래처 등록
               </button>
             </div>
@@ -1497,8 +1497,8 @@ function ClientsPage({ clients, allTxs, onSave, onDelete, onUpload }) {
               {l:"연계 지출", v:fmt(totals.totalOut)+"원", c:"#f87171"},
             ].map(k=>(
               <div key={k.l} style={{padding:"8px 12px",borderRadius:9,
-                background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.06)"}}>
-                <div style={{fontSize:9,color:"#6b7280",textTransform:"uppercase",letterSpacing:".04em",marginBottom:3}}>{k.l}</div>
+                background:"rgba(0,0,0,.03)",border:"1px solid rgba(0,0,0,.04)"}}>
+                <div style={{fontSize:9,color:"#9ca3af",textTransform:"uppercase",letterSpacing:".04em",marginBottom:3}}>{k.l}</div>
                 <div style={{fontSize:13,fontWeight:800,color:k.c}}>{k.v}</div>
               </div>
             ))}
@@ -1507,11 +1507,11 @@ function ClientsPage({ clients, allTxs, onSave, onDelete, onUpload }) {
           {/* 검색 + 필터 */}
           <div style={{display:"flex",gap:8,alignItems:"center"}}>
             <div style={{position:"relative",flex:1}}>
-              <span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",fontSize:13,color:"#4b5563"}}>🔍</span>
+              <span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",fontSize:13,color:"#9ca3af"}}>🔍</span>
               <input value={search} onChange={e=>setSearch(e.target.value)}
                 placeholder="거래처명, 사업자번호, 대표자명 검색..."
-                style={{width:"100%",background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",
-                  borderRadius:9,padding:"8px 12px 8px 32px",color:"#fff",fontSize:12,outline:"none",boxSizing:"border-box"}}/>
+                style={{width:"100%",background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",
+                  borderRadius:9,padding:"8px 12px 8px 32px",color:"#111827",fontSize:12,outline:"none",boxSizing:"border-box"}}/>
             </div>
             {[{v:"all",l:"전체"},
               {v:"customer",l:"📤 매출처"},
@@ -1520,15 +1520,15 @@ function ClientsPage({ clients, allTxs, onSave, onDelete, onUpload }) {
             ].map(f=>(
               <button key={f.v} onClick={()=>setTypeFilter(f.v)} style={{
                 padding:"7px 12px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",
-                background:typeFilter===f.v?"rgba(96,165,250,.15)":"rgba(255,255,255,.04)",
-                border:`1px solid ${typeFilter===f.v?"rgba(96,165,250,.5)":"rgba(255,255,255,.08)"}`,
+                background:typeFilter===f.v?"rgba(96,165,250,.15)":"rgba(0,0,0,.04)",
+                border:`1px solid ${typeFilter===f.v?"rgba(96,165,250,.5)":"rgba(0,0,0,.08)"}`,
                 color:typeFilter===f.v?"#60a5fa":"#6b7280",whiteSpace:"nowrap"}}>
                 {f.l}
               </button>
             ))}
             <select value={sortBy} onChange={e=>setSortBy(e.target.value)}
-              style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",
-                borderRadius:8,padding:"7px 10px",color:"#9ca3af",fontSize:11,outline:"none"}}>
+              style={{background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",
+                borderRadius:8,padding:"7px 10px",color:"#6b7280",fontSize:11,outline:"none"}}>
               <option value="name" style={{background:"#1a1f2e"}}>이름순</option>
               <option value="txCount" style={{background:"#1a1f2e"}}>거래건수순</option>
               <option value="amount" style={{background:"#1a1f2e"}}>거래금액순</option>
@@ -1541,29 +1541,29 @@ function ClientsPage({ clients, allTxs, onSave, onDelete, onUpload }) {
           {clients.length===0 ? (
             <div style={{padding:"80px 0",textAlign:"center"}}>
               <div style={{fontSize:48,marginBottom:14}}>🏢</div>
-              <div style={{fontSize:14,fontWeight:700,color:"#6b7280",marginBottom:8}}>등록된 거래처가 없습니다</div>
-              <div style={{fontSize:12,color:"#374151",marginBottom:22}}>홈택스 엑셀을 업로드하거나 직접 등록하세요</div>
+              <div style={{fontSize:14,fontWeight:700,color:"#9ca3af",marginBottom:8}}>등록된 거래처가 없습니다</div>
+              <div style={{fontSize:12,color:"#6b7280",marginBottom:22}}>홈택스 엑셀을 업로드하거나 직접 등록하세요</div>
               <div style={{display:"flex",gap:10,justifyContent:"center"}}>
                 <button onClick={()=>setShowUpload(true)} style={{padding:"10px 22px",borderRadius:10,cursor:"pointer",
                   background:"rgba(96,165,250,.1)",border:"1px solid rgba(96,165,250,.3)",color:"#60a5fa",fontWeight:700,fontSize:13}}>
                   📂 엑셀 업로드
                 </button>
                 <button onClick={()=>setEditModal("new")} style={{padding:"10px 22px",borderRadius:10,cursor:"pointer",
-                  background:"linear-gradient(135deg,#3b82f6,#1d4ed8)",border:"none",color:"#fff",fontWeight:700,fontSize:13}}>
+                  background:"linear-gradient(135deg,#3b82f6,#1d4ed8)",border:"none",color:"#111827",fontWeight:700,fontSize:13}}>
                   + 직접 등록
                 </button>
               </div>
             </div>
           ) : filtered.length===0 ? (
-            <div style={{padding:"60px 0",textAlign:"center",color:"#6b7280",fontSize:13}}>검색 결과 없음</div>
+            <div style={{padding:"60px 0",textAlign:"center",color:"#9ca3af",fontSize:13}}>검색 결과 없음</div>
           ) : (
             <>
               {/* 테이블 헤더 */}
               <div style={{display:"grid",
                 gridTemplateColumns:"30px 220px 110px 90px 80px 110px 110px 90px 100px",
                 padding:"8px 20px",background:"rgba(255,255,255,.02)",
-                borderBottom:"1px solid rgba(255,255,255,.06)",
-                fontSize:9,color:"#4b5563",fontWeight:700,letterSpacing:".06em",textTransform:"uppercase",flexShrink:0}}>
+                borderBottom:"1px solid rgba(0,0,0,.04)",
+                fontSize:9,color:"#9ca3af",fontWeight:700,letterSpacing:".06em",textTransform:"uppercase",flexShrink:0}}>
                 <div/>
                 <div>거래처</div><div>사업자번호</div><div>대표자</div><div>유형</div>
                 <div style={{textAlign:"right"}}>연계수입</div>
@@ -1582,11 +1582,11 @@ function ClientsPage({ clients, allTxs, onSave, onDelete, onUpload }) {
                     style={{display:"grid",
                       gridTemplateColumns:"30px 220px 110px 90px 80px 110px 110px 90px 100px",
                       padding:"10px 20px",alignItems:"center",cursor:"pointer",
-                      borderBottom:"1px solid rgba(255,255,255,.04)",
+                      borderBottom:"1px solid rgba(0,0,0,.04)",
                       background:isSel?`${meta.color}0a`:i%2===0?"transparent":"rgba(255,255,255,.008)",
                       borderLeft:`2.5px solid ${isSel?meta.color:"transparent"}`,
                       transition:"all .1s"}}
-                    onMouseEnter={e=>!isSel&&(e.currentTarget.style.background="rgba(255,255,255,.03)")}
+                    onMouseEnter={e=>!isSel&&(e.currentTarget.style.background="rgba(0,0,0,.03)")}
                     onMouseLeave={e=>!isSel&&(e.currentTarget.style.background=i%2===0?"transparent":"rgba(255,255,255,.008)")}>
                     {/* 아이콘 */}
                     <div style={{width:24,height:24,borderRadius:7,flexShrink:0,
@@ -1596,11 +1596,11 @@ function ClientsPage({ clients, allTxs, onSave, onDelete, onUpload }) {
                     </div>
                     {/* 거래처명 */}
                     <div>
-                      <div style={{fontSize:12,fontWeight:700,color:"#e5e7eb"}}>{c.name}</div>
-                      <div style={{fontSize:10,color:"#4b5563"}}>{c.bizType||c.bizItem||""}</div>
+                      <div style={{fontSize:12,fontWeight:700,color:"#6b7280"}}>{c.name}</div>
+                      <div style={{fontSize:10,color:"#9ca3af"}}>{c.bizType||c.bizItem||""}</div>
                     </div>
-                    <div style={{fontSize:11,color:"#6b7280",fontFamily:"monospace"}}>{c.bizNo||"-"}</div>
-                    <div style={{fontSize:11,color:"#9ca3af"}}>{c.ceoName||"-"}</div>
+                    <div style={{fontSize:11,color:"#9ca3af",fontFamily:"monospace"}}>{c.bizNo||"-"}</div>
+                    <div style={{fontSize:11,color:"#6b7280"}}>{c.ceoName||"-"}</div>
                     {/* 유형 뱃지 */}
                     <div style={{padding:"3px 8px",borderRadius:20,fontSize:9,fontWeight:700,
                       background:`${meta.color}15`,color:meta.color,
@@ -1613,14 +1613,14 @@ function ClientsPage({ clients, allTxs, onSave, onDelete, onUpload }) {
                     <div style={{fontSize:11,fontWeight:600,color:"#f87171",textAlign:"right"}}>
                       {st.totalOut>0?`${fmt(st.totalOut)}원`:"-"}
                     </div>
-                    <div style={{fontSize:11,color:"#6b7280",textAlign:"right"}}>
+                    <div style={{fontSize:11,color:"#9ca3af",textAlign:"right"}}>
                       {st.count>0?`${st.count}건`:"-"}
                     </div>
                     {/* 버튼 */}
                     <div style={{display:"flex",gap:4,justifyContent:"center"}} onClick={e=>e.stopPropagation()}>
                       <button onClick={()=>setEditModal(c)} style={{
                         padding:"4px 8px",borderRadius:6,fontSize:9,fontWeight:700,cursor:"pointer",
-                        background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",color:"#9ca3af"}}>
+                        background:"rgba(0,0,0,.04)",border:"1px solid rgba(0,0,0,.1)",color:"#6b7280"}}>
                         ✏️
                       </button>
                       <button onClick={()=>{if(window.confirm(`"${c.name}" 삭제?`))onDelete(c.id);}} style={{
@@ -1643,14 +1643,14 @@ function ClientsPage({ clients, allTxs, onSave, onDelete, onUpload }) {
         const st = clientStats[c.id] || {};
         const meta = CLIENT_TYPE_META[c.type] || CLIENT_TYPE_META.both;
         return (
-          <div style={{width:300,flexShrink:0,borderLeft:"1px solid rgba(255,255,255,.07)",
+          <div style={{width:300,flexShrink:0,borderLeft:"1px solid rgba(0,0,0,.07)",
             display:"flex",flexDirection:"column",overflow:"hidden"}}>
-            <div style={{padding:"16px 18px",borderBottom:"1px solid rgba(255,255,255,.06)",flexShrink:0}}>
+            <div style={{padding:"16px 18px",borderBottom:"1px solid rgba(0,0,0,.04)",flexShrink:0}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
                 <div>
                   <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
                     <span style={{fontSize:20}}>{meta.icon}</span>
-                    <span style={{fontSize:14,fontWeight:800,color:"#fff"}}>{c.name}</span>
+                    <span style={{fontSize:14,fontWeight:800,color:"#111827"}}>{c.name}</span>
                   </div>
                   <span style={{fontSize:10,padding:"2px 8px",borderRadius:10,
                     background:`${meta.color}15`,color:meta.color,border:`1px solid ${meta.color}30`,fontWeight:700}}>
@@ -1660,12 +1660,12 @@ function ClientsPage({ clients, allTxs, onSave, onDelete, onUpload }) {
                 <div style={{display:"flex",gap:6}}>
                   <button onClick={()=>setEditModal(c)} style={{
                     padding:"5px 10px",borderRadius:7,fontSize:11,fontWeight:700,cursor:"pointer",
-                    background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",color:"#9ca3af"}}>
+                    background:"rgba(0,0,0,.04)",border:"1px solid rgba(0,0,0,.1)",color:"#6b7280"}}>
                     ✏️ 수정
                   </button>
                   <button onClick={()=>setSelClient(null)} style={{
                     padding:"5px 10px",borderRadius:7,fontSize:11,cursor:"pointer",
-                    background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",color:"#6b7280"}}>
+                    background:"rgba(0,0,0,.04)",border:"1px solid rgba(0,0,0,.08)",color:"#9ca3af"}}>
                     ✕
                   </button>
                 </div>
@@ -1680,20 +1680,20 @@ function ClientsPage({ clients, allTxs, onSave, onDelete, onUpload }) {
                 {l:"은행/계좌", v:[c.bank,c.bankAcc].filter(Boolean).join(" ")||"-"},
               ].map(r=>(
                 <div key={r.l} style={{display:"flex",justifyContent:"space-between",padding:"4px 0",
-                  borderBottom:"1px solid rgba(255,255,255,.04)"}}>
-                  <span style={{fontSize:10,color:"#6b7280"}}>{r.l}</span>
-                  <span style={{fontSize:10,color:"#9ca3af",fontWeight:500,
+                  borderBottom:"1px solid rgba(0,0,0,.04)"}}>
+                  <span style={{fontSize:10,color:"#9ca3af"}}>{r.l}</span>
+                  <span style={{fontSize:10,color:"#6b7280",fontWeight:500,
                     maxWidth:160,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",textAlign:"right"}}>
                     {r.v}
                   </span>
                 </div>
               ))}
-              {c.addr&&<div style={{fontSize:10,color:"#4b5563",marginTop:6,lineHeight:1.5}}>{c.addr}</div>}
+              {c.addr&&<div style={{fontSize:10,color:"#9ca3af",marginTop:6,lineHeight:1.5}}>{c.addr}</div>}
             </div>
 
             {/* 거래 통계 */}
-            <div style={{padding:"12px 18px",borderBottom:"1px solid rgba(255,255,255,.06)",flexShrink:0}}>
-              <div style={{fontSize:10,color:"#6b7280",fontWeight:700,marginBottom:8,textTransform:"uppercase",letterSpacing:".04em"}}>
+            <div style={{padding:"12px 18px",borderBottom:"1px solid rgba(0,0,0,.04)",flexShrink:0}}>
+              <div style={{fontSize:10,color:"#9ca3af",fontWeight:700,marginBottom:8,textTransform:"uppercase",letterSpacing:".04em"}}>
                 연계 거래내역
               </div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:6}}>
@@ -1706,24 +1706,24 @@ function ClientsPage({ clients, allTxs, onSave, onDelete, onUpload }) {
                   <div style={{fontSize:13,fontWeight:800,color:"#f87171"}}>{fmt(st.totalOut)}원</div>
                 </div>
               </div>
-              <div style={{fontSize:10,color:"#6b7280"}}>
+              <div style={{fontSize:10,color:"#9ca3af"}}>
                 총 {st.count}건 · 최근 {st.lastDate||"-"}
               </div>
             </div>
 
             {/* 최근 거래 */}
             <div style={{flex:1,overflowY:"auto",padding:"12px 18px"}}>
-              <div style={{fontSize:10,color:"#6b7280",fontWeight:700,marginBottom:8,textTransform:"uppercase",letterSpacing:".04em"}}>
+              <div style={{fontSize:10,color:"#9ca3af",fontWeight:700,marginBottom:8,textTransform:"uppercase",letterSpacing:".04em"}}>
                 최근 거래
               </div>
               {(st.recentTxs||[]).length===0
-                ? <div style={{fontSize:11,color:"#374151",fontStyle:"italic"}}>연계된 거래 없음</div>
+                ? <div style={{fontSize:11,color:"#6b7280",fontStyle:"italic"}}>연계된 거래 없음</div>
                 : (st.recentTxs||[]).map((tx,i)=>(
                   <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",
-                    borderBottom:"1px solid rgba(255,255,255,.04)"}}>
+                    borderBottom:"1px solid rgba(0,0,0,.04)"}}>
                     <div>
-                      <div style={{fontSize:11,color:"#e5e7eb",fontWeight:500}}>{tx.desc}</div>
-                      <div style={{fontSize:9,color:"#4b5563"}}>{tx.date} · {tx.category}</div>
+                      <div style={{fontSize:11,color:"#6b7280",fontWeight:500}}>{tx.desc}</div>
+                      <div style={{fontSize:9,color:"#9ca3af"}}>{tx.date} · {tx.category}</div>
                     </div>
                     <div style={{fontSize:11,fontWeight:700,
                       color:tx.amount>=0?"#34d399":"#f87171",whiteSpace:"nowrap",marginLeft:8}}>
@@ -1751,16 +1751,16 @@ function ProjectModal({ project, onSave, onClose }) {
   const [form, setForm] = useState({...init, color: init.color || PROJECT_COLORS[Math.floor(Math.random()*PROJECT_COLORS.length)]});
   const s = (k,v) => setForm(f=>({...f,[k]:v}));
   return (
-    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.8)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={onClose}>
-      <div onClick={e=>e.stopPropagation()} style={{background:"#131826",border:"1px solid rgba(139,92,246,.35)",borderRadius:20,width:540,maxHeight:"88vh",display:"flex",flexDirection:"column",boxShadow:"0 32px 80px rgba(0,0,0,.7)"}}>
-        <div style={{padding:"18px 24px",borderBottom:"1px solid rgba(255,255,255,.07)",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
-          <div style={{fontSize:15,fontWeight:900,color:"#fff"}}>{project?"✏️ 프로젝트 수정":"🗂 프로젝트 등록"}</div>
-          <button onClick={onClose} style={{background:"none",border:"none",color:"#6b7280",fontSize:20,cursor:"pointer"}}>✕</button>
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={onClose}>
+      <div onClick={e=>e.stopPropagation()} style={{background:"#ffffff",border:"1px solid rgba(139,92,246,.35)",borderRadius:20,width:540,maxHeight:"88vh",display:"flex",flexDirection:"column",boxShadow:"0 32px 80px rgba(0,0,0,.15)"}}>
+        <div style={{padding:"18px 24px",borderBottom:"1px solid rgba(0,0,0,.07)",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+          <div style={{fontSize:15,fontWeight:900,color:"#111827"}}>{project?"✏️ 프로젝트 수정":"🗂 프로젝트 등록"}</div>
+          <button onClick={onClose} style={{background:"none",border:"none",color:"#9ca3af",fontSize:20,cursor:"pointer"}}>✕</button>
         </div>
         <div style={{flex:1,overflowY:"auto",padding:"20px 24px",display:"flex",flexDirection:"column",gap:13}}>
           {/* 색상 선택 */}
           <div>
-            <label style={{fontSize:11,color:"#6b7280",fontWeight:600,display:"block",marginBottom:8}}>프로젝트 색상</label>
+            <label style={{fontSize:11,color:"#9ca3af",fontWeight:600,display:"block",marginBottom:8}}>프로젝트 색상</label>
             <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
               {PROJECT_COLORS.map(c=>(
                 <div key={c} onClick={()=>s("color",c)} style={{width:28,height:28,borderRadius:8,background:c,cursor:"pointer",
@@ -1780,22 +1780,22 @@ function ProjectModal({ project, onSave, onClose }) {
               {k:"desc",   l:"설명",            p:"프로젝트 설명...",           span:2},
             ].map(f=>(
               <div key={f.k} style={{display:"flex",flexDirection:"column",gap:5,...(f.span===2?{gridColumn:"1/-1"}:{})}}>
-                <label style={{fontSize:11,color:"#6b7280",fontWeight:600}}>{f.l}</label>
+                <label style={{fontSize:11,color:"#9ca3af",fontWeight:600}}>{f.l}</label>
                 {f.type==="sel"
                   ? <select value={form[f.k]||""} onChange={e=>s(f.k,e.target.value)}
-                      style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",borderRadius:8,padding:"8px 12px",color:"#fff",fontSize:13,outline:"none"}}>
+                      style={{background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",borderRadius:8,padding:"8px 12px",color:"#111827",fontSize:13,outline:"none"}}>
                       {f.opts.map(o=><option key={o.v} value={o.v} style={{background:"#1a1f2e"}}>{o.l}</option>)}
                     </select>
                   : <input type={f.type||"text"} value={form[f.k]||""} onChange={e=>s(f.k,f.type==="number"?parseInt(e.target.value)||0:e.target.value)} placeholder={f.p}
-                      style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",borderRadius:8,padding:"8px 12px",color:"#fff",fontSize:13,outline:"none"}}/>}
+                      style={{background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",borderRadius:8,padding:"8px 12px",color:"#111827",fontSize:13,outline:"none"}}/>}
               </div>
             ))}
           </div>
         </div>
-        <div style={{padding:"14px 24px",borderTop:"1px solid rgba(255,255,255,.07)",display:"flex",justifyContent:"flex-end",gap:10,flexShrink:0}}>
-          <button onClick={onClose} style={{padding:"9px 20px",borderRadius:9,cursor:"pointer",background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",color:"#9ca3af",fontWeight:600,fontSize:13}}>취소</button>
+        <div style={{padding:"14px 24px",borderTop:"1px solid rgba(0,0,0,.07)",display:"flex",justifyContent:"flex-end",gap:10,flexShrink:0}}>
+          <button onClick={onClose} style={{padding:"9px 20px",borderRadius:9,cursor:"pointer",background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",color:"#6b7280",fontWeight:600,fontSize:13}}>취소</button>
           <button onClick={()=>onSave({...form,id:form.id||"proj_"+Date.now()})} disabled={!form.name}
-            style={{padding:"9px 24px",borderRadius:9,cursor:form.name?"pointer":"not-allowed",background:form.name?`linear-gradient(135deg,${form.color},${form.color}cc)`:"#374151",border:"none",color:"#fff",fontWeight:700,fontSize:13,opacity:form.name?1:.5}}>
+            style={{padding:"9px 24px",borderRadius:9,cursor:form.name?"pointer":"not-allowed",background:form.name?`linear-gradient(135deg,${form.color},${form.color}cc)`:"#374151",border:"none",color:"#111827",fontWeight:700,fontSize:13,opacity:form.name?1:.5}}>
             ✓ 저장
           </button>
         </div>
@@ -1811,17 +1811,17 @@ function ProjectTag({ projects, value, onChange }) {
   return (
     <div style={{position:"relative"}}>
       <div onClick={()=>setOpen(o=>!o)} style={{padding:"2px 8px",borderRadius:8,cursor:"pointer",fontSize:10,fontWeight:700,
-        background:sel?`${sel.color}20`:"rgba(255,255,255,.05)",
-        border:`1px solid ${sel?`${sel.color}40`:"rgba(255,255,255,.1)"}`,
-        color:sel?sel.color:"#4b5563",whiteSpace:"nowrap",minWidth:60}}>
+        background:sel?`${sel.color}20`:"rgba(0,0,0,.05)",
+        border:`1px solid ${sel?`${sel.color}40`:"rgba(0,0,0,.1)"}`,
+        color:sel?sel.color:"#9ca3af",whiteSpace:"nowrap",minWidth:60}}>
         {sel?sel.name.slice(0,8)+(sel.name.length>8?"…":""):"프로젝트"}
       </div>
       {open&&<div style={{position:"absolute",top:"100%",left:0,zIndex:999,marginTop:4,
-        background:"#1e2535",border:"1px solid rgba(255,255,255,.12)",borderRadius:10,
+        background:"#1e2535",border:"1px solid rgba(0,0,0,.12)",borderRadius:10,
         minWidth:180,boxShadow:"0 16px 40px rgba(0,0,0,.6)",overflow:"hidden"}}>
-        <div onClick={()=>{onChange("");setOpen(false);}} style={{padding:"8px 12px",cursor:"pointer",fontSize:11,color:"#6b7280",
-          borderBottom:"1px solid rgba(255,255,255,.06)"}}
-          onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.05)"}
+        <div onClick={()=>{onChange("");setOpen(false);}} style={{padding:"8px 12px",cursor:"pointer",fontSize:11,color:"#9ca3af",
+          borderBottom:"1px solid rgba(0,0,0,.04)"}}
+          onMouseEnter={e=>e.currentTarget.style.background="rgba(0,0,0,.05)"}
           onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
           — 미배정
         </div>
@@ -1831,8 +1831,8 @@ function ProjectTag({ projects, value, onChange }) {
             onMouseEnter={e=>e.currentTarget.style.background=`${p.color}15`}
             onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
             <div style={{width:8,height:8,borderRadius:3,background:p.color,flexShrink:0}}/>
-            <span style={{color:"#e5e7eb",fontWeight:600}}>{p.name}</span>
-            <span style={{fontSize:9,color:"#4b5563",marginLeft:"auto"}}>{p.status==="active"?"진행중":p.status==="done"?"완료":p.status==="pause"?"보류":"계획"}</span>
+            <span style={{color:"#6b7280",fontWeight:600}}>{p.name}</span>
+            <span style={{fontSize:9,color:"#9ca3af",marginLeft:"auto"}}>{p.status==="active"?"진행중":p.status==="done"?"완료":p.status==="pause"?"보류":"계획"}</span>
           </div>
         ))}
       </div>}
@@ -1878,13 +1878,13 @@ function ProjectsPage({ projects, allTxs, onSave, onDelete, onTagTx }) {
       {editModal&&<ProjectModal project={editModal==="new"?null:editModal} onSave={c=>{onSave(c);setEditModal(null);}} onClose={()=>setEditModal(null)}/>}
 
       {/* 헤더 */}
-      <div style={{padding:"18px 24px 14px",flexShrink:0,borderBottom:"1px solid rgba(255,255,255,.06)"}}>
+      <div style={{padding:"18px 24px 14px",flexShrink:0,borderBottom:"1px solid rgba(0,0,0,.04)"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
           <div>
-            <h2 style={{fontSize:18,fontWeight:900,color:"#fff",margin:"0 0 3px",letterSpacing:"-.03em"}}>🗂 프로젝트 관리</h2>
-            <p style={{color:"#6b7280",margin:0,fontSize:12}}>프로젝트별 수익·비용·순이익 추적</p>
+            <h2 style={{fontSize:18,fontWeight:900,color:"#111827",margin:"0 0 3px",letterSpacing:"-.03em"}}>🗂 프로젝트 관리</h2>
+            <p style={{color:"#9ca3af",margin:0,fontSize:12}}>프로젝트별 수익·비용·순이익 추적</p>
           </div>
-          <button onClick={()=>setEditModal("new")} style={{padding:"8px 16px",borderRadius:9,fontSize:12,fontWeight:700,cursor:"pointer",background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",border:"none",color:"#fff"}}>
+          <button onClick={()=>setEditModal("new")} style={{padding:"8px 16px",borderRadius:9,fontSize:12,fontWeight:700,cursor:"pointer",background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",border:"none",color:"#111827"}}>
             + 프로젝트 등록
           </button>
         </div>
@@ -1898,8 +1898,8 @@ function ProjectsPage({ projects, allTxs, onSave, onDelete, onTagTx }) {
             {l:"총 비용",       v:`${fmtM(totalCost)}원`, c:"#f87171"},
             {l:"총 순이익",     v:`${totalProfit>=0?"+":""}${fmtM(totalProfit)}원`, c:totalProfit>=0?"#a78bfa":"#f87171"},
           ].map(k=>(
-            <div key={k.l} style={{padding:"9px 12px",borderRadius:9,background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.06)"}}>
-              <div style={{fontSize:9,color:"#6b7280",textTransform:"uppercase",letterSpacing:".04em",marginBottom:3}}>{k.l}</div>
+            <div key={k.l} style={{padding:"9px 12px",borderRadius:9,background:"rgba(0,0,0,.03)",border:"1px solid rgba(0,0,0,.04)"}}>
+              <div style={{fontSize:9,color:"#9ca3af",textTransform:"uppercase",letterSpacing:".04em",marginBottom:3}}>{k.l}</div>
               <div style={{fontSize:13,fontWeight:800,color:k.c}}>{k.v}</div>
             </div>
           ))}
@@ -1913,8 +1913,8 @@ function ProjectsPage({ projects, allTxs, onSave, onDelete, onTagTx }) {
           {projects.length===0 ? (
             <div style={{padding:"80px 0",textAlign:"center"}}>
               <div style={{fontSize:48,marginBottom:14}}>🗂</div>
-              <div style={{fontSize:14,fontWeight:700,color:"#6b7280",marginBottom:8}}>등록된 프로젝트가 없습니다</div>
-              <button onClick={()=>setEditModal("new")} style={{padding:"10px 24px",borderRadius:10,cursor:"pointer",background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",border:"none",color:"#fff",fontWeight:700,fontSize:13}}>
+              <div style={{fontSize:14,fontWeight:700,color:"#9ca3af",marginBottom:8}}>등록된 프로젝트가 없습니다</div>
+              <button onClick={()=>setEditModal("new")} style={{padding:"10px 24px",borderRadius:10,cursor:"pointer",background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",border:"none",color:"#111827",fontWeight:700,fontSize:13}}>
                 + 첫 프로젝트 등록
               </button>
             </div>
@@ -1939,16 +1939,16 @@ function ProjectsPage({ projects, allTxs, onSave, onDelete, onTagTx }) {
                       <div style={{flex:1}}>
                         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
                           <div style={{width:10,height:10,borderRadius:3,background:p.color,flexShrink:0}}/>
-                          <span style={{fontSize:13,fontWeight:800,color:"#fff"}}>{p.name}</span>
+                          <span style={{fontSize:13,fontWeight:800,color:"#111827"}}>{p.name}</span>
                         </div>
-                        {p.client&&<div style={{fontSize:10,color:"#6b7280"}}>{p.client}</div>}
+                        {p.client&&<div style={{fontSize:10,color:"#9ca3af"}}>{p.client}</div>}
                       </div>
                       <div style={{display:"flex",gap:6,alignItems:"center"}}>
                         <span style={{fontSize:9,padding:"2px 8px",borderRadius:10,fontWeight:700,
                           background:`${meta.c}18`,color:meta.c,border:`1px solid ${meta.c}35`}}>
                           {meta.dot} {meta.l}
                         </span>
-                        <button onClick={e=>{e.stopPropagation();setEditModal(p);}} style={{background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",borderRadius:6,color:"#6b7280",cursor:"pointer",fontSize:11,padding:"2px 7px"}}>✏️</button>
+                        <button onClick={e=>{e.stopPropagation();setEditModal(p);}} style={{background:"rgba(0,0,0,.04)",border:"1px solid rgba(0,0,0,.1)",borderRadius:6,color:"#9ca3af",cursor:"pointer",fontSize:11,padding:"2px 7px"}}>✏️</button>
                         <button onClick={e=>{e.stopPropagation();if(window.confirm(`"${p.name}" 삭제?`))onDelete(p.id);}} style={{background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.2)",borderRadius:6,color:"#f87171",cursor:"pointer",fontSize:11,padding:"2px 7px"}}>🗑</button>
                       </div>
                     </div>
@@ -1961,7 +1961,7 @@ function ProjectsPage({ projects, allTxs, onSave, onDelete, onTagTx }) {
                         {l:"순이익", v:st.profit||0,  c:(st.profit||0)>=0?"#a78bfa":"#f87171", sign:(st.profit||0)>=0?"+":""},
                       ].map(k=>(
                         <div key={k.l} style={{padding:"8px 10px",borderRadius:9,background:"rgba(0,0,0,.2)"}}>
-                          <div style={{fontSize:9,color:"#6b7280",marginBottom:3}}>{k.l}</div>
+                          <div style={{fontSize:9,color:"#9ca3af",marginBottom:3}}>{k.l}</div>
                           <div style={{fontSize:12,fontWeight:800,color:k.c}}>
                             {k.sign}{fmtM(k.v)}원
                           </div>
@@ -1973,24 +1973,24 @@ function ProjectsPage({ projects, allTxs, onSave, onDelete, onTagTx }) {
                     {p.budget>0&&(
                       <div style={{marginBottom:10}}>
                         <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
-                          <span style={{fontSize:9,color:"#6b7280"}}>예산 사용률</span>
+                          <span style={{fontSize:9,color:"#9ca3af"}}>예산 사용률</span>
                           <span style={{fontSize:9,fontWeight:700,color:overBudget?"#f87171":"#9ca3af"}}>
                             {budgetPct.toFixed(0)}% {overBudget?"⚠ 초과!":""}
                           </span>
                         </div>
-                        <div style={{height:5,borderRadius:3,background:"rgba(255,255,255,.08)"}}>
+                        <div style={{height:5,borderRadius:3,background:"rgba(0,0,0,.08)"}}>
                           <div style={{height:"100%",borderRadius:3,width:`${Math.min(budgetPct,100)}%`,
                             background:overBudget?"#f87171":budgetPct>80?"#f59e0b":p.color,
                             transition:"width .3s"}}/>
                         </div>
-                        <div style={{fontSize:9,color:"#4b5563",marginTop:3}}>
+                        <div style={{fontSize:9,color:"#9ca3af",marginTop:3}}>
                           예산 {fmtM(p.budget)}원 · 사용 {fmtM(st.cost||0)}원
                         </div>
                       </div>
                     )}
 
                     {/* 기간 + 거래건수 */}
-                    <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:"#4b5563"}}>
+                    <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:"#9ca3af"}}>
                       <span>{p.startDate||"-"} ~ {p.endDate||"진행중"}</span>
                       <span style={{color:p.color}}>{st.txs?.length||0}건 태깅됨</span>
                     </div>
@@ -2007,7 +2007,7 @@ function ProjectsPage({ projects, allTxs, onSave, onDelete, onTagTx }) {
               <div style={{fontSize:11,color:"#f59e0b",fontWeight:700,marginBottom:4}}>
                 ⚠ 프로젝트 미배정 거래 {untaggedTxs.length}건
               </div>
-              <div style={{fontSize:11,color:"#6b7280"}}>
+              <div style={{fontSize:11,color:"#9ca3af"}}>
                 계좌 내역 페이지에서 거래 행의 프로젝트 컬럼을 클릭해 프로젝트를 태깅하세요.
               </div>
             </div>
@@ -2016,12 +2016,12 @@ function ProjectsPage({ projects, allTxs, onSave, onDelete, onTagTx }) {
 
         {/* 우측 상세 패널 */}
         {selProj&&selStat&&(
-          <div style={{width:320,flexShrink:0,borderLeft:"1px solid rgba(255,255,255,.07)",display:"flex",flexDirection:"column",overflow:"hidden"}}>
-            <div style={{padding:"16px 18px",borderBottom:"1px solid rgba(255,255,255,.06)",flexShrink:0}}>
+          <div style={{width:320,flexShrink:0,borderLeft:"1px solid rgba(0,0,0,.07)",display:"flex",flexDirection:"column",overflow:"hidden"}}>
+            <div style={{padding:"16px 18px",borderBottom:"1px solid rgba(0,0,0,.04)",flexShrink:0}}>
               <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
                 <div style={{width:12,height:12,borderRadius:4,background:selProj.color}}/>
-                <span style={{fontSize:14,fontWeight:800,color:"#fff"}}>{selProj.name}</span>
-                <button onClick={()=>setSelProj(null)} style={{marginLeft:"auto",background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",borderRadius:6,color:"#6b7280",cursor:"pointer",fontSize:12,padding:"3px 8px"}}>✕</button>
+                <span style={{fontSize:14,fontWeight:800,color:"#111827"}}>{selProj.name}</span>
+                <button onClick={()=>setSelProj(null)} style={{marginLeft:"auto",background:"rgba(0,0,0,.04)",border:"1px solid rgba(0,0,0,.08)",borderRadius:6,color:"#9ca3af",cursor:"pointer",fontSize:12,padding:"3px 8px"}}>✕</button>
               </div>
               {/* 수익 구조 */}
               {[
@@ -2032,7 +2032,7 @@ function ProjectsPage({ projects, allTxs, onSave, onDelete, onTagTx }) {
               ].map(r=>(
                 <div key={r.l} style={{display:"flex",justifyContent:"space-between",padding:`${r.bold?"8px":"5px"} 8px`,
                   borderRadius:r.bold?8:0, marginBottom:r.bold?8:0,
-                  background:r.bold?"rgba(255,255,255,.04)":"transparent"}}>
+                  background:r.bold?"rgba(0,0,0,.04)":"transparent"}}>
                   <span style={{fontSize:11,color:r.bold?"#e5e7eb":"#6b7280",fontWeight:r.bold?700:400}}>{r.l}</span>
                   <span style={{fontSize:r.bold?14:11,fontWeight:r.bold?900:600,color:r.c}}>
                     {r.tag||(r.sign+fmtM(Math.abs(r.v))+"원")}
@@ -2042,16 +2042,16 @@ function ProjectsPage({ projects, allTxs, onSave, onDelete, onTagTx }) {
             </div>
 
             {/* 계정별 비용 분류 */}
-            <div style={{padding:"12px 18px",borderBottom:"1px solid rgba(255,255,255,.06)",flexShrink:0}}>
-              <div style={{fontSize:10,color:"#6b7280",fontWeight:700,marginBottom:8,textTransform:"uppercase",letterSpacing:".04em"}}>비용 분류</div>
+            <div style={{padding:"12px 18px",borderBottom:"1px solid rgba(0,0,0,.04)",flexShrink:0}}>
+              <div style={{fontSize:10,color:"#9ca3af",fontWeight:700,marginBottom:8,textTransform:"uppercase",letterSpacing:".04em"}}>비용 분류</div>
               {(()=>{
                 const bycat = {};
                 selStat.txs.filter(t=>t.amount<0).forEach(t=>{
                   bycat[t.category||"미확인"]=(bycat[t.category||"미확인"]||0)+Math.abs(t.amount);
                 });
                 return Object.entries(bycat).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([cat,amt])=>(
-                  <div key={cat} style={{display:"flex",justifyContent:"space-between",padding:"4px 0",borderBottom:"1px solid rgba(255,255,255,.04)"}}>
-                    <span style={{fontSize:10,color:"#9ca3af"}}>{cat}</span>
+                  <div key={cat} style={{display:"flex",justifyContent:"space-between",padding:"4px 0",borderBottom:"1px solid rgba(0,0,0,.04)"}}>
+                    <span style={{fontSize:10,color:"#6b7280"}}>{cat}</span>
                     <span style={{fontSize:10,fontWeight:600,color:"#f87171"}}>{fmtM(amt)}원</span>
                   </div>
                 ));
@@ -2060,16 +2060,16 @@ function ProjectsPage({ projects, allTxs, onSave, onDelete, onTagTx }) {
 
             {/* 최근 거래 */}
             <div style={{flex:1,overflowY:"auto",padding:"12px 18px"}}>
-              <div style={{fontSize:10,color:"#6b7280",fontWeight:700,marginBottom:8,textTransform:"uppercase",letterSpacing:".04em"}}>
+              <div style={{fontSize:10,color:"#9ca3af",fontWeight:700,marginBottom:8,textTransform:"uppercase",letterSpacing:".04em"}}>
                 태깅된 거래 ({selStat.txs.length}건)
               </div>
               {selStat.txs.length===0
-                ? <div style={{fontSize:11,color:"#374151",fontStyle:"italic"}}>태깅된 거래 없음</div>
+                ? <div style={{fontSize:11,color:"#6b7280",fontStyle:"italic"}}>태깅된 거래 없음</div>
                 : selStat.txs.sort((a,b)=>b.date.localeCompare(a.date)).slice(0,20).map((tx,i)=>(
-                    <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:"1px solid rgba(255,255,255,.04)"}}>
+                    <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:"1px solid rgba(0,0,0,.04)"}}>
                       <div>
-                        <div style={{fontSize:11,color:"#e5e7eb",fontWeight:500}}>{tx.desc}</div>
-                        <div style={{fontSize:9,color:"#4b5563"}}>{tx.date} · {tx.category}</div>
+                        <div style={{fontSize:11,color:"#6b7280",fontWeight:500}}>{tx.desc}</div>
+                        <div style={{fontSize:9,color:"#9ca3af"}}>{tx.date} · {tx.category}</div>
                       </div>
                       <div style={{fontSize:11,fontWeight:700,color:tx.amount>=0?"#34d399":"#f87171",whiteSpace:"nowrap",marginLeft:8}}>
                         {tx.amount>=0?"+":""}{Math.abs(tx.amount).toLocaleString()}원
@@ -2186,23 +2186,23 @@ function CashflowPage({ accounts, allTxs, plans, onSavePlan, onDeletePlan }) {
     const [f, setF] = useState({...init});
     const sf = (k,v) => setF(p=>({...p,[k]:v}));
     return (
-      <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.8)",zIndex:600,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={onClose}>
-        <div onClick={e=>e.stopPropagation()} style={{background:"#131826",border:"1px solid rgba(248,113,113,.3)",borderRadius:20,width:480,display:"flex",flexDirection:"column",boxShadow:"0 32px 80px rgba(0,0,0,.7)"}}>
-          <div style={{padding:"18px 24px",borderBottom:"1px solid rgba(255,255,255,.07)",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
-            <div style={{fontSize:15,fontWeight:900,color:"#fff"}}>{plan?"✏️ 예정 항목 수정":"📅 예정 수입/지출 등록"}</div>
-            <button onClick={onClose} style={{background:"none",border:"none",color:"#6b7280",fontSize:20,cursor:"pointer"}}>✕</button>
+      <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.6)",zIndex:600,display:"flex",alignItems:"center",justifyContent:"center",padding:16}} onClick={onClose}>
+        <div onClick={e=>e.stopPropagation()} style={{background:"#ffffff",border:"1px solid rgba(248,113,113,.3)",borderRadius:20,width:480,display:"flex",flexDirection:"column",boxShadow:"0 32px 80px rgba(0,0,0,.15)"}}>
+          <div style={{padding:"18px 24px",borderBottom:"1px solid rgba(0,0,0,.07)",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+            <div style={{fontSize:15,fontWeight:900,color:"#111827"}}>{plan?"✏️ 예정 항목 수정":"📅 예정 수입/지출 등록"}</div>
+            <button onClick={onClose} style={{background:"none",border:"none",color:"#9ca3af",fontSize:20,cursor:"pointer"}}>✕</button>
           </div>
           <div style={{padding:"20px 24px",display:"flex",flexDirection:"column",gap:13}}>
             {/* 수입/지출 토글 */}
             <div>
-              <label style={{fontSize:11,color:"#6b7280",fontWeight:600,display:"block",marginBottom:8}}>유형</label>
+              <label style={{fontSize:11,color:"#9ca3af",fontWeight:600,display:"block",marginBottom:8}}>유형</label>
               <div style={{display:"flex",gap:8}}>
                 {[{v:1,l:"💰 수입 예정",c:"#34d399"},{v:-1,l:"💸 지출 예정",c:"#f87171"}].map(t=>{
                   const isSel = (f.amount>=0?1:-1)===t.v;
                   return <button key={t.v} onClick={()=>sf("amount",Math.abs(f.amount)*t.v)} style={{
                     flex:1,padding:"9px 0",borderRadius:9,cursor:"pointer",fontSize:12,fontWeight:700,
-                    background:isSel?`${t.c}18`:"rgba(255,255,255,.04)",
-                    border:`1.5px solid ${isSel?`${t.c}60`:"rgba(255,255,255,.1)"}`,
+                    background:isSel?`${t.c}18`:"rgba(0,0,0,.04)",
+                    border:`1.5px solid ${isSel?`${t.c}60`:"rgba(0,0,0,.1)"}`,
                     color:isSel?t.c:"#6b7280"}}>
                     {t.l}
                   </button>;
@@ -2214,32 +2214,32 @@ function CashflowPage({ accounts, allTxs, plans, onSavePlan, onDeletePlan }) {
               {k:"note",  l:"메모",         p:"비고 사항..."},
             ].map(fi=>(
               <div key={fi.k} style={{display:"flex",flexDirection:"column",gap:5}}>
-                <label style={{fontSize:11,color:"#6b7280",fontWeight:600}}>{fi.l}</label>
+                <label style={{fontSize:11,color:"#9ca3af",fontWeight:600}}>{fi.l}</label>
                 <input value={f[fi.k]||""} onChange={e=>sf(fi.k,e.target.value)} placeholder={fi.p}
-                  style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",borderRadius:8,padding:"8px 12px",color:"#fff",fontSize:13,outline:"none"}}/>
+                  style={{background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",borderRadius:8,padding:"8px 12px",color:"#111827",fontSize:13,outline:"none"}}/>
               </div>
             ))}
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
               <div style={{display:"flex",flexDirection:"column",gap:5}}>
-                <label style={{fontSize:11,color:"#6b7280",fontWeight:600}}>금액 *</label>
+                <label style={{fontSize:11,color:"#9ca3af",fontWeight:600}}>금액 *</label>
                 <input type="number" value={Math.abs(f.amount)||""} onChange={e=>sf("amount",parseInt(e.target.value)||0 * (f.amount<0?-1:1))}
                   placeholder="1500000"
-                  style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",borderRadius:8,padding:"8px 12px",color:"#fff",fontSize:13,outline:"none"}}/>
+                  style={{background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",borderRadius:8,padding:"8px 12px",color:"#111827",fontSize:13,outline:"none"}}/>
               </div>
               <div style={{display:"flex",flexDirection:"column",gap:5}}>
-                <label style={{fontSize:11,color:"#6b7280",fontWeight:600}}>날짜 *</label>
+                <label style={{fontSize:11,color:"#9ca3af",fontWeight:600}}>날짜 *</label>
                 <input type="date" value={f.date} onChange={e=>sf("date",e.target.value)}
-                  style={{background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",borderRadius:8,padding:"8px 12px",color:"#fff",fontSize:13,outline:"none"}}/>
+                  style={{background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",borderRadius:8,padding:"8px 12px",color:"#111827",fontSize:13,outline:"none"}}/>
               </div>
             </div>
             <div style={{display:"flex",flexDirection:"column",gap:5}}>
-              <label style={{fontSize:11,color:"#6b7280",fontWeight:600}}>반복 주기</label>
+              <label style={{fontSize:11,color:"#9ca3af",fontWeight:600}}>반복 주기</label>
               <div style={{display:"flex",gap:6}}>
                 {REPEAT_OPTIONS.map(r=>(
                   <button key={r.v} onClick={()=>sf("repeat",r.v)} style={{
                     flex:1,padding:"7px 0",borderRadius:8,cursor:"pointer",fontSize:11,fontWeight:700,
-                    background:f.repeat===r.v?"rgba(139,92,246,.18)":"rgba(255,255,255,.04)",
-                    border:`1px solid ${f.repeat===r.v?"rgba(139,92,246,.5)":"rgba(255,255,255,.1)"}`,
+                    background:f.repeat===r.v?"rgba(139,92,246,.18)":"rgba(0,0,0,.04)",
+                    border:`1px solid ${f.repeat===r.v?"rgba(139,92,246,.5)":"rgba(0,0,0,.1)"}`,
                     color:f.repeat===r.v?"#c4b5fd":"#6b7280"}}>
                     {r.l}
                   </button>
@@ -2247,10 +2247,10 @@ function CashflowPage({ accounts, allTxs, plans, onSavePlan, onDeletePlan }) {
               </div>
             </div>
           </div>
-          <div style={{padding:"14px 24px",borderTop:"1px solid rgba(255,255,255,.07)",display:"flex",justifyContent:"flex-end",gap:10,flexShrink:0}}>
-            <button onClick={onClose} style={{padding:"9px 20px",borderRadius:9,cursor:"pointer",background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",color:"#9ca3af",fontWeight:600,fontSize:13}}>취소</button>
+          <div style={{padding:"14px 24px",borderTop:"1px solid rgba(0,0,0,.07)",display:"flex",justifyContent:"flex-end",gap:10,flexShrink:0}}>
+            <button onClick={onClose} style={{padding:"9px 20px",borderRadius:9,cursor:"pointer",background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.1)",color:"#6b7280",fontWeight:600,fontSize:13}}>취소</button>
             <button onClick={()=>onSave({...f,id:f.id||"plan_"+Date.now(),amount:parseInt(f.amount)||0})} disabled={!f.name||!f.amount}
-              style={{padding:"9px 24px",borderRadius:9,cursor:f.name&&f.amount?"pointer":"not-allowed",background:f.amount>=0?"linear-gradient(135deg,#34d399,#059669)":"linear-gradient(135deg,#f87171,#dc2626)",border:"none",color:"#fff",fontWeight:700,fontSize:13,opacity:f.name&&f.amount?1:.5}}>
+              style={{padding:"9px 24px",borderRadius:9,cursor:f.name&&f.amount?"pointer":"not-allowed",background:f.amount>=0?"linear-gradient(135deg,#34d399,#059669)":"linear-gradient(135deg,#f87171,#dc2626)",border:"none",color:"#111827",fontWeight:700,fontSize:13,opacity:f.name&&f.amount?1:.5}}>
               ✓ 저장
             </button>
           </div>
@@ -2266,11 +2266,11 @@ function CashflowPage({ accounts, allTxs, plans, onSavePlan, onDeletePlan }) {
       {editPlan&&<PlanModal plan={editPlan==="new"?null:editPlan} onSave={p=>{onSavePlan(p);setEditPlan(null);}} onClose={()=>setEditPlan(null)}/>}
 
       {/* 헤더 */}
-      <div style={{padding:"18px 24px 14px",flexShrink:0,borderBottom:"1px solid rgba(255,255,255,.06)"}}>
+      <div style={{padding:"18px 24px 14px",flexShrink:0,borderBottom:"1px solid rgba(0,0,0,.04)"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
           <div>
-            <h2 style={{fontSize:18,fontWeight:900,color:"#fff",margin:"0 0 3px"}}>💰 캐시플로우 예측</h2>
-            <p style={{color:"#6b7280",margin:0,fontSize:12}}>예정 수입·지출 입력 → 잔고 시뮬레이션</p>
+            <h2 style={{fontSize:18,fontWeight:900,color:"#111827",margin:"0 0 3px"}}>💰 캐시플로우 예측</h2>
+            <p style={{color:"#9ca3af",margin:0,fontSize:12}}>예정 수입·지출 입력 → 잔고 시뮬레이션</p>
           </div>
           <div style={{display:"flex",gap:8,alignItems:"center"}}>
             {/* 예측 기간 */}
@@ -2278,15 +2278,15 @@ function CashflowPage({ accounts, allTxs, plans, onSavePlan, onDeletePlan }) {
               {[30,60,90,180].map(d=>(
                 <button key={d} onClick={()=>setHorizon(d)} style={{
                   padding:"6px 12px",borderRadius:8,fontSize:11,fontWeight:700,cursor:"pointer",
-                  background:horizon===d?"rgba(139,92,246,.2)":"rgba(255,255,255,.04)",
-                  border:`1px solid ${horizon===d?"rgba(139,92,246,.5)":"rgba(255,255,255,.1)"}`,
+                  background:horizon===d?"rgba(139,92,246,.2)":"rgba(0,0,0,.04)",
+                  border:`1px solid ${horizon===d?"rgba(139,92,246,.5)":"rgba(0,0,0,.1)"}`,
                   color:horizon===d?"#c4b5fd":"#6b7280"}}>
                   {d}일
                 </button>
               ))}
             </div>
             <button onClick={()=>setEditPlan("new")} style={{padding:"8px 16px",borderRadius:9,fontSize:12,fontWeight:700,cursor:"pointer",
-              background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",border:"none",color:"#fff"}}>
+              background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",border:"none",color:"#111827"}}>
               + 예정 항목 등록
             </button>
           </div>
@@ -2301,13 +2301,13 @@ function CashflowPage({ accounts, allTxs, plans, onSavePlan, onDeletePlan }) {
             {l:"예정 지출 합계", v:expandedPlans.filter(e=>e.amount<0).reduce((s,e)=>s+Math.abs(e.amount),0), c:"#f87171", sign:"-", sub:`${expandedPlans.filter(e=>e.amount<0).length}건`},
           ].map(k=>(
             <div key={k.l} style={{padding:"12px 16px",borderRadius:12,
-              background:simulation.danger&&k.l==="최저 잔고 예상"?"rgba(248,113,113,.08)":"rgba(255,255,255,.03)",
-              border:`1px solid ${simulation.danger&&k.l==="최저 잔고 예상"?"rgba(248,113,113,.3)":"rgba(255,255,255,.07)"}`}}>
-              <div style={{fontSize:9,color:"#6b7280",textTransform:"uppercase",letterSpacing:".04em",marginBottom:4}}>{k.l}</div>
+              background:simulation.danger&&k.l==="최저 잔고 예상"?"rgba(248,113,113,.08)":"rgba(0,0,0,.03)",
+              border:`1px solid ${simulation.danger&&k.l==="최저 잔고 예상"?"rgba(248,113,113,.3)":"rgba(0,0,0,.07)"}`}}>
+              <div style={{fontSize:9,color:"#9ca3af",textTransform:"uppercase",letterSpacing:".04em",marginBottom:4}}>{k.l}</div>
               <div style={{fontSize:16,fontWeight:900,color:k.c,letterSpacing:"-.02em"}}>
                 {k.sign}{(k.v<0?"-":"")}{fmtM(Math.abs(k.v))}원
               </div>
-              {k.sub&&<div style={{fontSize:9,color:"#6b7280",marginTop:2}}>{k.sub}</div>}
+              {k.sub&&<div style={{fontSize:9,color:"#9ca3af",marginTop:2}}>{k.sub}</div>}
             </div>
           ))}
         </div>
@@ -2329,8 +2329,8 @@ function CashflowPage({ accounts, allTxs, plans, onSavePlan, onDeletePlan }) {
 
           {/* 잔고 추이 차트 */}
           <div style={{marginBottom:24,padding:"18px 20px",borderRadius:14,
-            background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.07)"}}>
-            <div style={{fontSize:12,fontWeight:700,color:"#fff",marginBottom:16}}>잔고 추이 시뮬레이션</div>
+            background:"rgba(0,0,0,.025)",border:"1px solid rgba(0,0,0,.07)"}}>
+            <div style={{fontSize:12,fontWeight:700,color:"#111827",marginBottom:16}}>잔고 추이 시뮬레이션</div>
             <div style={{position:"relative",height:160}}>
               {/* 0선 */}
               {chartMin<0&&<div style={{position:"absolute",left:0,right:0,
@@ -2369,19 +2369,19 @@ function CashflowPage({ accounts, allTxs, plans, onSavePlan, onDeletePlan }) {
               {/* X축 레이블 */}
               <div style={{display:"flex",justifyContent:"space-between",marginTop:6}}>
                 {[0, Math.floor(chartData.length/2), chartData.length-1].map(i=>(
-                  <span key={i} style={{fontSize:9,color:"#4b5563"}}>{fmtDate(chartData[i]?.date)}</span>
+                  <span key={i} style={{fontSize:9,color:"#9ca3af"}}>{fmtDate(chartData[i]?.date)}</span>
                 ))}
               </div>
             </div>
           </div>
 
           {/* 예정 이벤트 타임라인 */}
-          <div style={{fontSize:12,fontWeight:700,color:"#fff",marginBottom:12}}>
+          <div style={{fontSize:12,fontWeight:700,color:"#111827",marginBottom:12}}>
             예정 일정 타임라인
-            <span style={{fontSize:10,color:"#6b7280",marginLeft:8}}>({expandedPlans.length}건)</span>
+            <span style={{fontSize:10,color:"#9ca3af",marginLeft:8}}>({expandedPlans.length}건)</span>
           </div>
           {expandedPlans.length===0
-            ? <div style={{padding:"40px 0",textAlign:"center",color:"#374151",fontSize:12}}>
+            ? <div style={{padding:"40px 0",textAlign:"center",color:"#6b7280",fontSize:12}}>
                 우측 상단 "예정 항목 등록"으로 미래 수입·지출을 입력해 보세요
               </div>
             : (()=>{
@@ -2392,14 +2392,14 @@ function CashflowPage({ accounts, allTxs, plans, onSavePlan, onDeletePlan }) {
                   return (
                     <div key={i} style={{display:"grid",gridTemplateColumns:"80px 12px 1fr 110px 110px",
                       alignItems:"center",gap:10,padding:"7px 0",
-                      borderBottom:"1px solid rgba(255,255,255,.04)"}}>
-                      <div style={{fontSize:10,color:"#6b7280"}}>{fmtDate(ev._date)}</div>
+                      borderBottom:"1px solid rgba(0,0,0,.04)"}}>
+                      <div style={{fontSize:10,color:"#9ca3af"}}>{fmtDate(ev._date)}</div>
                       <div style={{width:10,height:10,borderRadius:"50%",
                         background:isIn?"#34d399":"#f87171",flexShrink:0}}/>
                       <div>
-                        <div style={{fontSize:12,fontWeight:600,color:"#e5e7eb"}}>{ev.name}</div>
-                        {ev.note&&<div style={{fontSize:10,color:"#4b5563"}}>{ev.note}</div>}
-                        {ev.repeat!=="once"&&<div style={{fontSize:9,color:"#6b7280"}}>{REPEAT_OPTIONS.find(r=>r.v===ev.repeat)?.l}</div>}
+                        <div style={{fontSize:12,fontWeight:600,color:"#6b7280"}}>{ev.name}</div>
+                        {ev.note&&<div style={{fontSize:10,color:"#9ca3af"}}>{ev.note}</div>}
+                        {ev.repeat!=="once"&&<div style={{fontSize:9,color:"#9ca3af"}}>{REPEAT_OPTIONS.find(r=>r.v===ev.repeat)?.l}</div>}
                       </div>
                       <div style={{fontSize:12,fontWeight:700,color:isIn?"#34d399":"#f87171",textAlign:"right"}}>
                         {isIn?"+":"-"}{fmtM(Math.abs(ev.amount))}원
@@ -2415,10 +2415,10 @@ function CashflowPage({ accounts, allTxs, plans, onSavePlan, onDeletePlan }) {
         </div>
 
         {/* 우측: 등록된 예정 항목 관리 */}
-        <div style={{width:300,flexShrink:0,borderLeft:"1px solid rgba(255,255,255,.07)",display:"flex",flexDirection:"column",overflow:"hidden"}}>
-          <div style={{padding:"14px 18px",borderBottom:"1px solid rgba(255,255,255,.06)",flexShrink:0,
+        <div style={{width:300,flexShrink:0,borderLeft:"1px solid rgba(0,0,0,.07)",display:"flex",flexDirection:"column",overflow:"hidden"}}>
+          <div style={{padding:"14px 18px",borderBottom:"1px solid rgba(0,0,0,.04)",flexShrink:0,
             display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <span style={{fontSize:11,fontWeight:700,color:"#9ca3af",textTransform:"uppercase",letterSpacing:".05em"}}>
+            <span style={{fontSize:11,fontWeight:700,color:"#6b7280",textTransform:"uppercase",letterSpacing:".05em"}}>
               등록된 항목 ({plans.length})
             </span>
             <button onClick={()=>setEditPlan("new")} style={{fontSize:11,color:"#a78bfa",cursor:"pointer",
@@ -2427,14 +2427,14 @@ function CashflowPage({ accounts, allTxs, plans, onSavePlan, onDeletePlan }) {
           </div>
           <div style={{flex:1,overflowY:"auto"}}>
             {plans.length===0
-              ? <div style={{padding:"32px 16px",textAlign:"center",color:"#374151",fontSize:11,fontStyle:"italic"}}>
+              ? <div style={{padding:"32px 16px",textAlign:"center",color:"#6b7280",fontSize:11,fontStyle:"italic"}}>
                   예정 항목 없음
                 </div>
               : plans.map((p,i)=>{
                   const isIn = p.amount>=0;
                   const repeatMeta = REPEAT_OPTIONS.find(r=>r.v===p.repeat);
                   return (
-                    <div key={p.id} style={{padding:"12px 18px",borderBottom:"1px solid rgba(255,255,255,.04)",
+                    <div key={p.id} style={{padding:"12px 18px",borderBottom:"1px solid rgba(0,0,0,.04)",
                       background:selPlan?.id===p.id?"rgba(139,92,246,.07)":"transparent",
                       transition:"background .1s"}}>
                       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:5}}>
@@ -2442,10 +2442,10 @@ function CashflowPage({ accounts, allTxs, plans, onSavePlan, onDeletePlan }) {
                           <div style={{display:"flex",alignItems:"center",gap:7,marginBottom:3}}>
                             <div style={{width:8,height:8,borderRadius:"50%",flexShrink:0,
                               background:isIn?"#34d399":"#f87171"}}/>
-                            <span style={{fontSize:12,fontWeight:700,color:"#e5e7eb"}}>{p.name}</span>
+                            <span style={{fontSize:12,fontWeight:700,color:"#6b7280"}}>{p.name}</span>
                           </div>
                           <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-                            <span style={{fontSize:10,color:"#6b7280"}}>{p.date}</span>
+                            <span style={{fontSize:10,color:"#9ca3af"}}>{p.date}</span>
                             <span style={{fontSize:10,padding:"1px 7px",borderRadius:8,fontWeight:600,
                               background:"rgba(139,92,246,.1)",color:"#c4b5fd",
                               border:"1px solid rgba(139,92,246,.2)"}}>
@@ -2458,12 +2458,12 @@ function CashflowPage({ accounts, allTxs, plans, onSavePlan, onDeletePlan }) {
                             {isIn?"+":"-"}{fmtM(Math.abs(p.amount))}원
                           </div>
                           <div style={{display:"flex",gap:4,marginTop:5}}>
-                            <button onClick={()=>setEditPlan(p)} style={{padding:"2px 7px",borderRadius:5,fontSize:9,fontWeight:700,cursor:"pointer",background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",color:"#9ca3af"}}>✏️</button>
+                            <button onClick={()=>setEditPlan(p)} style={{padding:"2px 7px",borderRadius:5,fontSize:9,fontWeight:700,cursor:"pointer",background:"rgba(0,0,0,.04)",border:"1px solid rgba(0,0,0,.1)",color:"#6b7280"}}>✏️</button>
                             <button onClick={()=>{if(window.confirm(`"${p.name}" 삭제?`))onDeletePlan(p.id);}} style={{padding:"2px 7px",borderRadius:5,fontSize:9,fontWeight:700,cursor:"pointer",background:"rgba(248,113,113,.08)",border:"1px solid rgba(248,113,113,.2)",color:"#f87171"}}>🗑</button>
                           </div>
                         </div>
                       </div>
-                      {p.note&&<div style={{fontSize:10,color:"#4b5563",marginTop:3}}>{p.note}</div>}
+                      {p.note&&<div style={{fontSize:10,color:"#9ca3af",marginTop:3}}>{p.note}</div>}
                     </div>
                   );
                 })}
@@ -2541,15 +2541,15 @@ export default function App(){
   const banks=accounts.filter(a=>a.type!=="card"&&a.type!=="personal_card");
   const cards=accounts.filter(a=>a.type==="card"||a.type==="personal_card");
 
-  return <div style={{minHeight:"100vh",background:"#0d1117",
+  return <div style={{minHeight:"100vh",background:"#f8fafc",
     fontFamily:"'Apple SD Gothic Neo','Malgun Gothic',-apple-system,sans-serif",
-    display:"flex",flexDirection:"column",color:"#e5e7eb"}}>
+    display:"flex",flexDirection:"column",color:"#6b7280"}}>
 
     {/* LOADING */}
     {loading&&<div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.82)",zIndex:300,
       display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:14}}>
       <div style={{fontSize:46}}>🐻</div>
-      <div style={{fontSize:15,color:"#fff",fontWeight:700}}>{loadMsg}</div>
+      <div style={{fontSize:15,color:"#111827",fontWeight:700}}>{loadMsg}</div>
       <div style={{display:"flex",gap:8}}>
         {[0,1,2].map(i=><div key={i} style={{width:9,height:9,borderRadius:"50%",background:"#8b5cf6",
           animation:`bb 1.2s ${i*.2}s infinite`}}/>)}
@@ -2578,13 +2578,13 @@ export default function App(){
 
     {/* TOPBAR */}
     <div style={{height:50,display:"flex",alignItems:"center",padding:"0 18px",gap:12,
-      background:"#080c14",borderBottom:"1px solid rgba(255,255,255,.07)",flexShrink:0}}>
+      background:"#080c14",borderBottom:"1px solid rgba(0,0,0,.07)",flexShrink:0}}>
       <div style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer"}} onClick={()=>setPage("home")}>
         <div style={{width:28,height:28,borderRadius:8,background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",
           display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>🐻</div>
-        <span style={{fontSize:15,fontWeight:900,color:"#fff",letterSpacing:"-.03em"}}>FitBear</span>
+        <span style={{fontSize:15,fontWeight:900,color:"#111827",letterSpacing:"-.03em"}}>FitBear</span>
       </div>
-      <span style={{fontSize:12,color:"#374151",flex:1}}>AI 경영관리 플랫폼</span>
+      <span style={{fontSize:12,color:"#6b7280",flex:1}}>AI 경영관리 플랫폼</span>
       {allTxs.length>0&&<div style={{display:"flex",gap:10,fontSize:11}}>
         <span style={{color:"#34d399"}}>↑ {fmtW(allTxs.filter(t=>t.amount>0).reduce((s,t)=>s+t.amount,0))}원</span>
         <span style={{color:"#f87171"}}>↓ {fmtW(allTxs.filter(t=>t.amount<0).reduce((s,t)=>s+Math.abs(t.amount),0))}원</span>
@@ -2602,7 +2602,7 @@ export default function App(){
     <div style={{flex:1,display:"flex",minHeight:0}}>
       {/* SIDEBAR */}
       <div style={{width:216,flexShrink:0,background:"#080c14",
-        borderRight:"1px solid rgba(255,255,255,.07)",display:"flex",flexDirection:"column",overflow:"hidden"}}>
+        borderRight:"1px solid rgba(0,0,0,.07)",display:"flex",flexDirection:"column",overflow:"hidden"}}>
 
         {/* Nav items */}
         {[{id:"home",icon:"🏠",label:"전체 현황"},
@@ -2623,12 +2623,12 @@ export default function App(){
             background:`${n.badgeColor}22`,color:n.badgeColor,border:`1px solid ${n.badgeColor}44`}}>{n.badge}</span>}
         </button>)}
 
-        <div style={{height:1,background:"rgba(255,255,255,.05)",margin:"4px 0",flexShrink:0}}/>
+        <div style={{height:1,background:"rgba(0,0,0,.05)",margin:"4px 0",flexShrink:0}}/>
 
         {/* Account list */}
         <div style={{flex:1,overflowY:"auto"}}>
           {banks.length>0&&<>
-            <div style={{padding:"8px 14px 3px",fontSize:10,color:"#374151",fontWeight:700,
+            <div style={{padding:"8px 14px 3px",fontSize:10,color:"#6b7280",fontWeight:700,
               textTransform:"uppercase",letterSpacing:".08em"}}>은행 계좌</div>
             {banks.map(a=><button key={a.id} onClick={()=>setPage("acc:"+a.id)} style={{
               width:"100%",display:"flex",alignItems:"center",gap:9,padding:"9px 14px",
@@ -2641,7 +2641,7 @@ export default function App(){
               <div style={{flex:1,overflow:"hidden"}}>
                 <div style={{fontSize:12,fontWeight:600,color:page==="acc:"+a.id?"#e5e7eb":"#9ca3af",
                   overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{a.name}</div>
-                <div style={{fontSize:10,color:page==="acc:"+a.id?a.color:"#4b5563",marginTop:1,fontWeight:600}}>
+                <div style={{fontSize:10,color:page==="acc:"+a.id?a.color:"#9ca3af",marginTop:1,fontWeight:600}}>
                   {(a.txs||[]).length}건</div>
               </div>
               {(a.txs||[]).some(t=>t.category==="미확인")&&
@@ -2649,7 +2649,7 @@ export default function App(){
             </button>)}
           </>}
           {cards.length>0&&<>
-            <div style={{padding:"8px 14px 3px",fontSize:10,color:"#374151",fontWeight:700,
+            <div style={{padding:"8px 14px 3px",fontSize:10,color:"#6b7280",fontWeight:700,
               textTransform:"uppercase",letterSpacing:".08em",marginTop:4}}>카드</div>
             {cards.map(a=><button key={a.id} onClick={()=>setPage("acc:"+a.id)} style={{
               width:"100%",display:"flex",alignItems:"center",gap:9,padding:"9px 14px",
@@ -2662,19 +2662,19 @@ export default function App(){
               <div style={{flex:1,overflow:"hidden"}}>
                 <div style={{fontSize:12,fontWeight:600,color:page==="acc:"+a.id?"#e5e7eb":"#9ca3af",
                   overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{a.name}</div>
-                <div style={{fontSize:10,color:page==="acc:"+a.id?a.color:"#4b5563",marginTop:1,fontWeight:600}}>
+                <div style={{fontSize:10,color:page==="acc:"+a.id?a.color:"#9ca3af",marginTop:1,fontWeight:600}}>
                   {(a.txs||[]).length}건</div>
               </div>
               {(a.txs||[]).some(t=>t.category==="미확인")&&
                 <span style={{width:6,height:6,borderRadius:"50%",background:"#fb923c",flexShrink:0}}/>}
             </button>)}
           </>}
-          {accounts.length===0&&<div style={{padding:"20px 14px",fontSize:11,color:"#374151",
+          {accounts.length===0&&<div style={{padding:"20px 14px",fontSize:11,color:"#6b7280",
             textAlign:"center",fontStyle:"italic"}}>등록된 계좌 없음</div>}
         </div>
 
         {/* Add button */}
-        <div style={{padding:"12px",borderTop:"1px solid rgba(255,255,255,.07)",flexShrink:0}}>
+        <div style={{padding:"12px",borderTop:"1px solid rgba(0,0,0,.07)",flexShrink:0}}>
           <button onClick={()=>setShowAdd(true)} style={{width:"100%",padding:"9px 0",borderRadius:10,cursor:"pointer",
             background:"rgba(139,92,246,.1)",border:"1px dashed rgba(139,92,246,.4)",
             color:"#a78bfa",fontSize:12,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",gap:5}}>
@@ -2686,12 +2686,12 @@ export default function App(){
       {/* MAIN */}
       <div style={{flex:1,display:"flex",flexDirection:"column",minHeight:0,overflow:"hidden"}}>
         {/* Breadcrumb */}
-        {selAcc&&<div style={{padding:"8px 18px",borderBottom:"1px solid rgba(255,255,255,.06)",
+        {selAcc&&<div style={{padding:"8px 18px",borderBottom:"1px solid rgba(0,0,0,.04)",
           display:"flex",alignItems:"center",gap:7,background:"rgba(255,255,255,.01)",flexShrink:0}}>
-          <button onClick={()=>setPage("home")} style={{fontSize:12,color:"#6b7280",cursor:"pointer",background:"none",border:"none",padding:0}}>전체 현황</button>
-          <span style={{color:"#374151"}}>›</span>
-          <span style={{fontSize:12,color:"#e5e7eb",fontWeight:600}}>{selAcc.name}</span>
-          <span style={{fontSize:10,color:"#4b5563"}}>{(selAcc.txs||[]).length}건</span>
+          <button onClick={()=>setPage("home")} style={{fontSize:12,color:"#9ca3af",cursor:"pointer",background:"none",border:"none",padding:0}}>전체 현황</button>
+          <span style={{color:"#6b7280"}}>›</span>
+          <span style={{fontSize:12,color:"#6b7280",fontWeight:600}}>{selAcc.name}</span>
+          <span style={{fontSize:10,color:"#9ca3af"}}>{(selAcc.txs||[]).length}건</span>
           <div style={{marginLeft:"auto",fontSize:11,color:"#34d399",fontWeight:600,
             padding:"3px 10px",borderRadius:20,background:"rgba(52,211,153,.08)",border:"1px solid rgba(52,211,153,.2)"}}>
             ✓ 손익계산서·재무상태표 자동 반영
@@ -2900,10 +2900,10 @@ function AIChatOverlay({ accounts, clients=[], onAddTx, onClose }) {
       <div style={{
         position:"relative", pointerEvents:"all",
         width: 420, height: "72vh", maxHeight: 640,
-        background: "#111827",
+        background: "#ffffff",
         border: "1px solid rgba(139,92,246,.4)",
         borderRadius: 20,
-        boxShadow: "0 32px 80px rgba(0,0,0,.7), 0 0 0 1px rgba(139,92,246,.15)",
+        boxShadow: "0 32px 80px rgba(0,0,0,.15), 0 0 0 1px rgba(139,92,246,.15)",
         display: "flex", flexDirection: "column",
         overflow: "hidden",
       }}>
@@ -2921,14 +2921,14 @@ function AIChatOverlay({ accounts, clients=[], onAddTx, onClose }) {
             display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18,
           }}>🐻</div>
           <div style={{flex:1}}>
-            <div style={{fontSize:14,fontWeight:800,color:"#fff"}}>FitBear AI 비서</div>
+            <div style={{fontSize:14,fontWeight:800,color:"#111827"}}>FitBear AI 비서</div>
             <div style={{fontSize:10,color:"#a78bfa",marginTop:1}}>
               {accounts.length}개 계좌 연결됨 · 자연어로 거래 추가
             </div>
           </div>
           <button onClick={onClose} style={{
-            background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",
-            borderRadius:8,color:"#9ca3af",fontSize:16,width:30,height:30,
+            background:"rgba(0,0,0,.04)",border:"1px solid rgba(0,0,0,.1)",
+            borderRadius:8,color:"#6b7280",fontSize:16,width:30,height:30,
             cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",
           }}>✕</button>
         </div>
@@ -2955,10 +2955,10 @@ function AIChatOverlay({ accounts, clients=[], onAddTx, onClose }) {
                   background: m.role==="user"
                     ? "linear-gradient(135deg,#7c3aed,#5b21b6)"
                     : m.confirmed ? "rgba(52,211,153,.1)"
-                    : m.rejected  ? "rgba(255,255,255,.04)"
-                    : "rgba(255,255,255,.06)",
+                    : m.rejected  ? "rgba(0,0,0,.04)"
+                    : "rgba(0,0,0,.04)",
                   border: m.role!=="user"
-                    ? `1px solid ${m.confirmed?"rgba(52,211,153,.3)":m.rejected?"rgba(255,255,255,.08)":"rgba(255,255,255,.08)"}`
+                    ? `1px solid ${m.confirmed?"rgba(52,211,153,.3)":m.rejected?"rgba(0,0,0,.08)":"rgba(0,0,0,.08)"}`
                     : "none",
                   fontSize: 13, color: "#e5e7eb", lineHeight: 1.55,
                   whiteSpace: "pre-wrap", wordBreak: "break-word",
@@ -2983,12 +2983,12 @@ function AIChatOverlay({ accounts, clients=[], onAddTx, onClose }) {
                     return (
                       <div key={ti} style={{
                         padding:"10px 12px", borderRadius:10, marginBottom:6,
-                        background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",
+                        background:"rgba(0,0,0,.04)",border:"1px solid rgba(0,0,0,.08)",
                       }}>
                         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:5}}>
                           <div style={{display:"flex",alignItems:"center",gap:7}}>
                             <div style={{width:8,height:8,borderRadius:"50%",background:acc?.color||"#8b5cf6"}}/>
-                            <span style={{fontSize:12,fontWeight:700,color:"#e5e7eb"}}>{tx.desc}</span>
+                            <span style={{fontSize:12,fontWeight:700,color:"#6b7280"}}>{tx.desc}</span>
                           </div>
                           <span style={{fontSize:13,fontWeight:800,
                             color:tx.amount>=0?"#34d399":"#f87171"}}>
@@ -3006,20 +3006,20 @@ function AIChatOverlay({ accounts, clients=[], onAddTx, onClose }) {
                             border:"1px solid rgba(139,92,246,.3)",fontWeight:600}}>
                             {tx.category}
                           </span>
-                          <span style={{fontSize:10,color:"#6b7280"}}>{tx.date}</span>
+                          <span style={{fontSize:10,color:"#9ca3af"}}>{tx.date}</span>
                         </div>
-                        {tx.memo&&<div style={{fontSize:10,color:"#6b7280",marginTop:4}}>{tx.memo}</div>}
+                        {tx.memo&&<div style={{fontSize:10,color:"#9ca3af",marginTop:4}}>{tx.memo}</div>}
                       </div>
                     );
                   })}
                   <div style={{display:"flex",gap:8,marginTop:10}}>
                     <button onClick={()=>rejectTx(m.pendingData)} style={{
                       flex:1,padding:"8px 0",borderRadius:9,cursor:"pointer",fontSize:12,fontWeight:700,
-                      background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.12)",color:"#9ca3af",
+                      background:"rgba(0,0,0,.05)",border:"1px solid rgba(0,0,0,.12)",color:"#6b7280",
                     }}>✕ 취소</button>
                     <button onClick={()=>confirmTx(m.pendingData)} style={{
                       flex:2,padding:"8px 0",borderRadius:9,cursor:"pointer",fontSize:12,fontWeight:700,
-                      background:"linear-gradient(135deg,#34d399,#059669)",border:"none",color:"#fff",
+                      background:"linear-gradient(135deg,#34d399,#059669)",border:"none",color:"#111827",
                     }}>✓ 추가하기</button>
                   </div>
                 </div>
@@ -3030,7 +3030,7 @@ function AIChatOverlay({ accounts, clients=[], onAddTx, onClose }) {
           {loading && (
             <div style={{display:"flex",alignItems:"center",gap:8,paddingLeft:34}}>
               <div style={{padding:"10px 14px",borderRadius:"16px 16px 16px 4px",
-                background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.08)",
+                background:"rgba(0,0,0,.04)",border:"1px solid rgba(0,0,0,.08)",
                 display:"flex",gap:4}}>
                 {[0,1,2].map(i=><div key={i} style={{
                   width:7,height:7,borderRadius:"50%",background:"#8b5cf6",
@@ -3065,7 +3065,7 @@ function AIChatOverlay({ accounts, clients=[], onAddTx, onClose }) {
         {/* 입력창 */}
         <div style={{
           padding:"12px 14px",
-          borderTop:"1px solid rgba(255,255,255,.07)",
+          borderTop:"1px solid rgba(0,0,0,.07)",
           background:"rgba(0,0,0,.2)",
           flexShrink:0,
         }}>
@@ -3079,25 +3079,25 @@ function AIChatOverlay({ accounts, clients=[], onAddTx, onClose }) {
               rows={2}
               disabled={loading}
               style={{
-                flex:1, background:"rgba(255,255,255,.06)",
+                flex:1, background:"rgba(0,0,0,.04)",
                 border:"1px solid rgba(139,92,246,.3)",
                 borderRadius:12, padding:"10px 14px",
-                color:"#fff", fontSize:13, outline:"none",
+                color:"#111827", fontSize:13, outline:"none",
                 resize:"none", fontFamily:"inherit", lineHeight:1.5,
                 opacity:loading?.6:1,
               }}
             />
             <button onClick={handleSend} disabled={loading||!input.trim()} style={{
               width:42,height:42,borderRadius:12,cursor:loading||!input.trim()?"not-allowed":"pointer",
-              background:loading||!input.trim()?"rgba(255,255,255,.06)":"linear-gradient(135deg,#8b5cf6,#6d28d9)",
-              border:"none",color:"#fff",fontSize:18,
+              background:loading||!input.trim()?"rgba(0,0,0,.04)":"linear-gradient(135deg,#8b5cf6,#6d28d9)",
+              border:"none",color:"#111827",fontSize:18,
               display:"flex",alignItems:"center",justifyContent:"center",
               opacity:loading||!input.trim()?.5:1,transition:"all .15s",flexShrink:0,
             }}>
               {loading ? "⏳" : "➤"}
             </button>
           </div>
-          <div style={{fontSize:10,color:"#374151",marginTop:6,textAlign:"center"}}>
+          <div style={{fontSize:10,color:"#6b7280",marginTop:6,textAlign:"center"}}>
             Shift+Enter 줄바꿈 · Enter 전송
           </div>
         </div>
@@ -3114,8 +3114,8 @@ function HomeOverview({accounts,allTxs,onSelect,onAdd}){
   const isEmpty=accounts.length===0;
   return <div style={{padding:"28px 32px",overflowY:"auto",flex:1}}>
     <div style={{marginBottom:24}}>
-      <h2 style={{fontSize:22,fontWeight:900,color:"#fff",margin:"0 0 5px",letterSpacing:"-.03em"}}>전체 현황</h2>
-      <p style={{color:"#6b7280",margin:0,fontSize:13}}>계좌 내역이 손익계산서와 재무상태표에 자동으로 반영됩니다</p>
+      <h2 style={{fontSize:22,fontWeight:900,color:"#111827",margin:"0 0 5px",letterSpacing:"-.03em"}}>전체 현황</h2>
+      <p style={{color:"#9ca3af",margin:0,fontSize:13}}>계좌 내역이 손익계산서와 재무상태표에 자동으로 반영됩니다</p>
     </div>
 
     {/* Financial summary */}
@@ -3125,8 +3125,8 @@ function HomeOverview({accounts,allTxs,onSelect,onAdd}){
         {l:"영업이익",v:pl.operatingProfit,c:pl.operatingProfit>=0?"#a78bfa":"#f87171",icon:"📊",sub:`이익률 ${pct(pl.opMargin)}`},
         {l:"총 거래건수",v:null,tag:`${allTxs.length}건`,c:"#9ca3af",icon:"📋"},
       ].map(k=><div key={k.l} style={{padding:"15px 18px",borderRadius:12,
-        background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.07)"}}>
-        <div style={{fontSize:10,color:"#6b7280",marginBottom:5,textTransform:"uppercase",letterSpacing:".04em"}}>{k.icon} {k.l}</div>
+        background:"rgba(0,0,0,.03)",border:"1px solid rgba(0,0,0,.07)"}}>
+        <div style={{fontSize:10,color:"#9ca3af",marginBottom:5,textTransform:"uppercase",letterSpacing:".04em"}}>{k.icon} {k.l}</div>
         {k.tag?<div style={{fontSize:20,fontWeight:900,color:k.c}}>{k.tag}</div>:
           <div style={{fontSize:20,fontWeight:900,color:k.c,letterSpacing:"-.02em"}}>
             {k.v>=0?"+":""}{fmtW(Math.abs(k.v))}원
@@ -3138,10 +3138,10 @@ function HomeOverview({accounts,allTxs,onSelect,onAdd}){
     {isEmpty
       ? <div style={{padding:"80px 0",textAlign:"center"}}>
           <div style={{fontSize:52,marginBottom:16}}>🏦</div>
-          <div style={{fontSize:16,fontWeight:700,color:"#6b7280",marginBottom:8}}>계좌를 등록해주세요</div>
-          <div style={{fontSize:13,color:"#374151",marginBottom:24}}>계좌 등록 → 거래 내역 업로드 → 재무제표 자동 생성</div>
+          <div style={{fontSize:16,fontWeight:700,color:"#9ca3af",marginBottom:8}}>계좌를 등록해주세요</div>
+          <div style={{fontSize:13,color:"#6b7280",marginBottom:24}}>계좌 등록 → 거래 내역 업로드 → 재무제표 자동 생성</div>
           <button onClick={onAdd} style={{padding:"12px 28px",borderRadius:12,cursor:"pointer",
-            background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",border:"none",color:"#fff",fontWeight:700,fontSize:14}}>
+            background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",border:"none",color:"#111827",fontWeight:700,fontSize:14}}>
             + 첫 계좌 등록하기
           </button>
         </div>
@@ -3159,20 +3159,20 @@ function HomeOverview({accounts,allTxs,onSelect,onAdd}){
               <div style={{display:"flex",justifyContent:"space-between",marginBottom:10}}>
                 <div>
                   <div style={{fontSize:10,color:a.color,fontWeight:700,marginBottom:3}}>{a.bank||"계좌"}</div>
-                  <div style={{fontSize:13,fontWeight:800,color:"#fff"}}>{a.name}</div>
+                  <div style={{fontSize:13,fontWeight:800,color:"#111827"}}>{a.name}</div>
                 </div>
                 <span style={{fontSize:20}}>{TICON[a.type]||"🏦"}</span>
               </div>
               {txs.length>0
                 ? <div style={{display:"flex",gap:12,paddingTop:10,borderTop:`1px solid ${a.color}20`}}>
-                    <div><div style={{fontSize:9,color:"#4b5563",marginBottom:1}}>거래</div>
-                      <div style={{fontSize:12,fontWeight:700,color:"#9ca3af"}}>{txs.length}건</div></div>
-                    <div><div style={{fontSize:9,color:"#4b5563",marginBottom:1}}>수입</div>
+                    <div><div style={{fontSize:9,color:"#9ca3af",marginBottom:1}}>거래</div>
+                      <div style={{fontSize:12,fontWeight:700,color:"#6b7280"}}>{txs.length}건</div></div>
+                    <div><div style={{fontSize:9,color:"#9ca3af",marginBottom:1}}>수입</div>
                       <div style={{fontSize:12,fontWeight:700,color:"#34d399"}}>{fmtW(aIn)}원</div></div>
-                    <div><div style={{fontSize:9,color:"#4b5563",marginBottom:1}}>지출</div>
+                    <div><div style={{fontSize:9,color:"#9ca3af",marginBottom:1}}>지출</div>
                       <div style={{fontSize:12,fontWeight:700,color:"#f87171"}}>{fmtW(aOut)}원</div></div>
                   </div>
-                : <div style={{paddingTop:10,borderTop:`1px solid ${a.color}20`,fontSize:11,color:"#374151",fontStyle:"italic"}}>
+                : <div style={{paddingTop:10,borderTop:`1px solid ${a.color}20`,fontSize:11,color:"#6b7280",fontStyle:"italic"}}>
                     내역 업로드 대기
                   </div>}
             </button>;
