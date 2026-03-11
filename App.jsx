@@ -2482,6 +2482,7 @@ export default function App(){
   const [clients,  setClients]  = useState([]);
   const [projects, setProjects] = useState([]);
   const [plans,    setPlans]    = useState([]);
+  const [companyInfo, setCompanyInfo] = useState(null);
   const [page, setPage]         = useState("home");
   const [showAdd, setShowAdd]   = useState(false);
   const [loading, setLoading]   = useState(false);
@@ -2515,6 +2516,27 @@ export default function App(){
   // AI 채팅에서 거래 직접 추가
   const addTxToAccount = useCallback((accId, tx) => {
     setAccounts(p => p.map(a => a.id !== accId ? a : { ...a, txs: [...(a.txs||[]), tx] }));
+  }, []);
+
+  // 재무제표 분석 결과 적용
+  const applyFinancialAnalysis = useCallback((result) => {
+    setCompanyInfo({
+      companyName: result.companyName,
+      industry: result.industry,
+      fiscalYear: result.fiscalYear,
+      scale: result.scale,
+      summary: result.summary,
+    });
+    // 추천 계정과목을 ACC_MAP에 동적으로 추가
+    if (result.suggestedCategories?.length) {
+      result.suggestedCategories.forEach(cat => {
+        if (!ACC_MAP[cat.key]) {
+          ACC_MAP[cat.key] = { fs: "pl", plGroup: cat.group === "revenue" ? "revenue" : cat.group === "cogs" ? "cogs" : "sga", label: cat.label || cat.key };
+          CAT_COLOR[cat.key] = cat.color || "#9ca3af";
+        }
+      });
+    }
+    alert(`✓ 분석 결과가 적용되었습니다!\n회사: ${result.companyName||"미확인"}\n업종: ${result.industry||"미확인"}\n계정과목: ${result.suggestedCategories?.length||0}개 구성`);
   }, []);
 
   const handleUpload = useCallback(async(files, accId)=>{
@@ -2584,7 +2606,9 @@ export default function App(){
           display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>🐻</div>
         <span style={{fontSize:15,fontWeight:900,color:"#fff",letterSpacing:"-.03em"}}>FitBear</span>
       </div>
-      <span style={{fontSize:12,color:"#374151",flex:1}}>AI 경영관리 플랫폼</span>
+      <span style={{fontSize:12,color:"#374151",flex:1}}>
+        {companyInfo?.companyName ? `${companyInfo.companyName} · ${companyInfo.industry||""}` : "AI 경영관리 플랫폼"}
+      </span>
       {allTxs.length>0&&<div style={{display:"flex",gap:10,fontSize:11}}>
         <span style={{color:"#34d399"}}>↑ {fmtW(allTxs.filter(t=>t.amount>0).reduce((s,t)=>s+t.amount,0))}원</span>
         <span style={{color:"#f87171"}}>↓ {fmtW(allTxs.filter(t=>t.amount<0).reduce((s,t)=>s+Math.abs(t.amount),0))}원</span>
@@ -2606,6 +2630,7 @@ export default function App(){
 
         {/* Nav items */}
         {[{id:"home",icon:"🏠",label:"전체 현황"},
+          {id:"import",   icon:"📑",label:"재무제표 업로드", badge:companyInfo?"분석완료":null, badgeColor:"#34d399"},
           {id:"pl",       icon:"📊",label:"손익계산서", badge:allTxs.length>0?"연동됨":null, badgeColor:"#34d399"},
           {id:"bs",       icon:"📋",label:"재무상태표",  badge:allTxs.length>0?"연동됨":null, badgeColor:"#60a5fa"},
           {id:"clients",  icon:"🏢",label:"거래처 관리", badge:clients.length>0?`${clients.length}개`:null, badgeColor:"#f59e0b"},
@@ -2701,6 +2726,7 @@ export default function App(){
         {/* Content */}
         <div style={{flex:1,overflow:"hidden",display:"flex",flexDirection:"column"}}>
           {page==="home"&&<HomeOverview accounts={accounts} allTxs={allTxs} onSelect={a=>setPage("acc:"+a.id)} onAdd={()=>setShowAdd(true)}/>}
+          {page==="import"&&<FinancialImportPage companyInfo={companyInfo} onApply={applyFinancialAnalysis}/>}
           {page==="pl"&&<PLPage allTxs={allTxs}/>}
           {page==="bs"&&<BSPage allTxs={allTxs} accounts={accounts}/>}
           {page==="clients"&&<ClientsPage clients={clients} allTxs={allTxs}
@@ -3102,6 +3128,322 @@ function AIChatOverlay({ accounts, clients=[], onAddTx, onClose }) {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FINANCIAL STATEMENT IMPORT PAGE  (재무제표 업로드 & AI 분석)
+// ─────────────────────────────────────────────────────────────────────────────
+async function analyzeFinancialStatement(file) {
+  const isImage = file.type.startsWith("image/");
+  const isExcel = /\.(xlsx|xls|csv)$/i.test(file.name);
+
+  let userContent;
+
+  if (isImage) {
+    // 이미지 → base64 → Claude vision
+    const base64 = await new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result.split(",")[1]);
+      r.onerror = rej;
+      r.readAsDataURL(file);
+    });
+    const mediaType = file.type || "image/jpeg";
+    userContent = [
+      { type: "image", source: { type: "base64", media_type: mediaType, data: base64 } },
+      { type: "text", text: "이 재무제표 이미지를 분석해주세요." }
+    ];
+  } else if (isExcel) {
+    // Excel → 텍스트 변환
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, { type: "array" });
+    let text = "";
+    wb.SheetNames.forEach(name => {
+      text += `[시트: ${name}]\n`;
+      const ws = wb.Sheets[name];
+      text += XLSX.utils.sheet_to_csv(ws) + "\n\n";
+    });
+    userContent = text.slice(0, 8000); // 토큰 제한
+  } else {
+    // 텍스트 파일
+    const text = await file.text();
+    userContent = text.slice(0, 8000);
+  }
+
+  const systemPrompt = `당신은 한국 회계 전문가입니다. 재무제표(손익계산서, 재무상태표)를 분석하여 아래 JSON 형식으로만 응답하세요.
+
+응답 형식 (JSON만, 설명 없이):
+{
+  "companyName": "회사명 (알 수 없으면 null)",
+  "industry": "업종 (예: IT서비스, 제조업, 도소매, 음식업, 건설업 등)",
+  "fiscalYear": "회계연도 (예: 2023)",
+  "scale": "기업규모 (소기업/중소기업/중견기업/대기업)",
+  "revenue": 매출액숫자(원),
+  "operatingProfit": 영업이익숫자(원),
+  "summary": "이 회사의 주요 비용 구조와 매출 특징을 2-3문장으로 설명",
+  "accounts": [
+    {
+      "name": "계정과목명",
+      "group": "revenue|cogs|sga|other",
+      "amount": 금액숫자(원),
+      "label": "표시명"
+    }
+  ],
+  "suggestedCategories": [
+    {
+      "key": "계정과목키 (영문없이 한글로, 예: 외주용역비)",
+      "label": "표시명",
+      "group": "revenue|cogs|sga",
+      "color": "#hex색상코드"
+    }
+  ]
+}
+
+suggestedCategories: 이 회사에 적합한 계정과목 목록. 기존 기본 항목(매출,급여,임차료 등) 포함하고 이 회사에 특화된 항목도 추가.
+금액 단위가 천원/백만원이면 원 단위로 변환.`;
+
+  const body = {
+    model: "claude-sonnet-4-20250514",
+    max_tokens: 3000,
+    system: systemPrompt,
+    messages: [{ role: "user", content: userContent }],
+  };
+
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  const text = (data.content?.[0]?.text || "").trim();
+  return JSON.parse(text.replace(/```json|```/g, "").trim());
+}
+
+const GROUP_COLORS = {
+  revenue: "#34d399", cogs: "#60a5fa", sga: "#a78bfa", other: "#9ca3af"
+};
+const GROUP_LABEL = {
+  revenue: "매출", cogs: "매출원가", sga: "판매관리비", other: "기타"
+};
+
+function FinancialImportPage({ companyInfo, onApply }) {
+  const [dragging, setDragging] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+  const fileRef = useRef();
+
+  const handleFiles = useCallback(async (files) => {
+    const file = files[0];
+    if (!file) return;
+    setAnalyzing(true);
+    setError(null);
+    setResult(null);
+    try {
+      const res = await analyzeFinancialStatement(file);
+      setResult(res);
+    } catch (e) {
+      setError("분석 실패: " + e.message);
+    }
+    setAnalyzing(false);
+  }, []);
+
+  const handleDrop = useCallback(e => {
+    e.preventDefault();
+    setDragging(false);
+    handleFiles(Array.from(e.dataTransfer.files));
+  }, [handleFiles]);
+
+  const handleApply = useCallback(() => {
+    if (!result) return;
+    onApply(result);
+  }, [result, onApply]);
+
+  const fmtAmt = n => {
+    if (!n && n !== 0) return "-";
+    const v = Math.abs(n);
+    if (v >= 100000000) return `${(v/100000000).toFixed(1)}억원`;
+    if (v >= 10000) return `${Math.round(v/10000)}만원`;
+    return `${v.toLocaleString()}원`;
+  };
+
+  const BG = "rgba(255,255,255,.03)";
+  const BORDER = "1px solid rgba(255,255,255,.07)";
+
+  return (
+    <div style={{padding:"28px 32px",overflowY:"auto",flex:1}}>
+      <div style={{marginBottom:24}}>
+        <h2 style={{fontSize:22,fontWeight:900,color:"#fff",margin:"0 0 5px",letterSpacing:"-.03em"}}>
+          재무제표 업로드
+        </h2>
+        <p style={{color:"#6b7280",margin:0,fontSize:13}}>
+          재무제표(손익계산서·재무상태표)를 업로드하면 AI가 분석하여 계정과목을 자동으로 구성합니다
+        </p>
+      </div>
+
+      {/* 현재 회사 정보 */}
+      {companyInfo && (
+        <div style={{padding:"14px 18px",borderRadius:12,background:"rgba(52,211,153,.06)",
+          border:"1px solid rgba(52,211,153,.2)",marginBottom:20,display:"flex",gap:20,flexWrap:"wrap"}}>
+          <div><div style={{fontSize:10,color:"#6b7280",marginBottom:3}}>회사명</div>
+            <div style={{fontSize:13,fontWeight:700,color:"#34d399"}}>{companyInfo.companyName||"-"}</div></div>
+          <div><div style={{fontSize:10,color:"#6b7280",marginBottom:3}}>업종</div>
+            <div style={{fontSize:13,fontWeight:700,color:"#34d399"}}>{companyInfo.industry||"-"}</div></div>
+          <div><div style={{fontSize:10,color:"#6b7280",marginBottom:3}}>회계연도</div>
+            <div style={{fontSize:13,fontWeight:700,color:"#34d399"}}>{companyInfo.fiscalYear||"-"}</div></div>
+          <div><div style={{fontSize:10,color:"#6b7280",marginBottom:3}}>규모</div>
+            <div style={{fontSize:13,fontWeight:700,color:"#34d399"}}>{companyInfo.scale||"-"}</div></div>
+        </div>
+      )}
+
+      {/* 업로드 존 */}
+      <div
+        onDragOver={e=>{e.preventDefault();setDragging(true);}}
+        onDragLeave={()=>setDragging(false)}
+        onDrop={handleDrop}
+        onClick={()=>!analyzing&&fileRef.current.click()}
+        style={{
+          border:`2px dashed ${dragging?"#8b5cf6":"rgba(139,92,246,.35)"}`,
+          borderRadius:16,padding:"48px 24px",textAlign:"center",cursor:"pointer",
+          background:dragging?"rgba(139,92,246,.08)":"rgba(139,92,246,.03)",
+          transition:"all .2s",marginBottom:24,
+        }}
+      >
+        <div style={{fontSize:42,marginBottom:12}}>{analyzing?"⏳":"📄"}</div>
+        {analyzing
+          ? <><div style={{fontSize:15,fontWeight:700,color:"#c4b5fd",marginBottom:6}}>AI 분석 중...</div>
+              <div style={{fontSize:12,color:"#6b7280"}}>재무제표를 읽고 계정과목을 파악하고 있습니다</div></>
+          : <><div style={{fontSize:15,fontWeight:700,color:"#c4b5fd",marginBottom:6}}>
+              재무제표 파일을 여기에 끌어다 놓거나 클릭하여 업로드
+            </div>
+            <div style={{fontSize:12,color:"#6b7280",marginBottom:12}}>
+              이미지 (JPG, PNG, WEBP) · Excel (XLSX, XLS) · CSV 지원
+            </div>
+            <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
+              {["손익계산서","재무상태표","합산재무제표"].map(t=>(
+                <span key={t} style={{padding:"3px 10px",borderRadius:20,fontSize:11,
+                  background:"rgba(139,92,246,.12)",border:"1px solid rgba(139,92,246,.3)",color:"#a78bfa"}}>
+                  {t}
+                </span>
+              ))}
+            </div></>}
+      </div>
+      <input ref={fileRef} type="file"
+        accept="image/*,.xlsx,.xls,.csv,.txt" style={{display:"none"}}
+        onChange={e=>{if(e.target.files.length)handleFiles(Array.from(e.target.files));e.target.value="";}}
+      />
+
+      {error && (
+        <div style={{padding:"14px 18px",borderRadius:10,background:"rgba(248,113,113,.08)",
+          border:"1px solid rgba(248,113,113,.3)",color:"#f87171",fontSize:13,marginBottom:20}}>
+          ⚠️ {error}
+        </div>
+      )}
+
+      {/* 분석 결과 */}
+      {result && (
+        <div style={{display:"flex",flexDirection:"column",gap:16}}>
+          {/* 회사 기본 정보 */}
+          <div style={{padding:"18px 20px",borderRadius:14,background:BG,border:BORDER}}>
+            <div style={{fontSize:12,fontWeight:800,color:"#8b5cf6",marginBottom:14,letterSpacing:".04em"}}>
+              AI 분석 결과
+            </div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(140px,1fr))",gap:12,marginBottom:14}}>
+              {[
+                {l:"회사명",v:result.companyName||"미확인"},
+                {l:"업종",v:result.industry||"미확인"},
+                {l:"회계연도",v:result.fiscalYear||"미확인"},
+                {l:"기업규모",v:result.scale||"미확인"},
+                {l:"매출액",v:fmtAmt(result.revenue)},
+                {l:"영업이익",v:fmtAmt(result.operatingProfit)},
+              ].map(k=>(
+                <div key={k.l} style={{padding:"10px 12px",borderRadius:10,
+                  background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.06)"}}>
+                  <div style={{fontSize:9,color:"#6b7280",marginBottom:4,textTransform:"uppercase"}}>{k.l}</div>
+                  <div style={{fontSize:13,fontWeight:700,color:"#e5e7eb"}}>{k.v}</div>
+                </div>
+              ))}
+            </div>
+            {result.summary && (
+              <div style={{padding:"10px 14px",borderRadius:8,background:"rgba(139,92,246,.07)",
+                border:"1px solid rgba(139,92,246,.15)",fontSize:12,color:"#c4b5fd",lineHeight:1.6}}>
+                💡 {result.summary}
+              </div>
+            )}
+          </div>
+
+          {/* 계정과목 목록 */}
+          {result.accounts && result.accounts.length > 0 && (
+            <div style={{padding:"18px 20px",borderRadius:14,background:BG,border:BORDER}}>
+              <div style={{fontSize:12,fontWeight:800,color:"#8b5cf6",marginBottom:14,letterSpacing:".04em"}}>
+                감지된 계정과목 ({result.accounts.length}개)
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                {["revenue","cogs","sga","other"].map(grp=>{
+                  const items = result.accounts.filter(a=>a.group===grp);
+                  if (!items.length) return null;
+                  return (
+                    <div key={grp}>
+                      <div style={{fontSize:10,color:GROUP_COLORS[grp],fontWeight:700,marginBottom:5,
+                        textTransform:"uppercase",letterSpacing:".05em"}}>
+                        {GROUP_LABEL[grp]}
+                      </div>
+                      {items.map((acc,i)=>(
+                        <div key={i} style={{display:"flex",justifyContent:"space-between",
+                          padding:"7px 10px",borderRadius:7,marginBottom:3,
+                          background:"rgba(255,255,255,.025)",
+                          borderLeft:`3px solid ${GROUP_COLORS[grp]}`}}>
+                          <span style={{fontSize:12,color:"#d1d5db"}}>{acc.name}</span>
+                          <span style={{fontSize:12,fontWeight:700,color:GROUP_COLORS[grp]}}>{fmtAmt(acc.amount)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* 추천 계정과목 */}
+          {result.suggestedCategories && result.suggestedCategories.length > 0 && (
+            <div style={{padding:"18px 20px",borderRadius:14,background:BG,border:BORDER}}>
+              <div style={{fontSize:12,fontWeight:800,color:"#8b5cf6",marginBottom:6,letterSpacing:".04em"}}>
+                추천 계정과목 구성 ({result.suggestedCategories.length}개)
+              </div>
+              <div style={{fontSize:11,color:"#4b5563",marginBottom:12}}>
+                이 회사의 업종·규모에 맞게 AI가 추천한 계정과목입니다
+              </div>
+              <div style={{display:"flex",flexWrap:"wrap",gap:7}}>
+                {result.suggestedCategories.map((cat,i)=>(
+                  <span key={i} style={{padding:"4px 12px",borderRadius:20,fontSize:11,fontWeight:600,
+                    background:`${cat.color||"#8b5cf6"}18`,border:`1px solid ${cat.color||"#8b5cf6"}44`,
+                    color:cat.color||"#c4b5fd"}}>
+                    {cat.label||cat.key}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 적용 버튼 */}
+          <div style={{display:"flex",gap:10}}>
+            <button onClick={handleApply} style={{
+              flex:1,padding:"14px",borderRadius:12,cursor:"pointer",fontWeight:800,fontSize:14,
+              background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",border:"none",color:"#fff",
+              boxShadow:"0 4px 20px rgba(139,92,246,.4)",
+            }}>
+              ✓ 분석 결과 적용하기
+            </button>
+            <button onClick={()=>setResult(null)} style={{
+              padding:"14px 20px",borderRadius:12,cursor:"pointer",fontWeight:700,fontSize:13,
+              background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",color:"#9ca3af",
+            }}>
+              다시 업로드
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
