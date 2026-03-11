@@ -2478,18 +2478,23 @@ function CashflowPage({ accounts, allTxs, plans, onSavePlan, onDeletePlan }) {
 // MAIN APP
 // ─────────────────────────────────────────────────────────────────────────────
 export default function App(){
-  const [accounts, setAccounts] = useState([]);
-  const [clients,  setClients]  = useState([]);
-  const [projects, setProjects] = useState([]);
-  const [plans,    setPlans]    = useState([]);
+  const [accounts,    setAccounts]    = useState([]);
+  const [clients,     setClients]     = useState([]);
+  const [projects,    setProjects]    = useState([]);
+  const [plans,       setPlans]       = useState([]);
+  const [employees,   setEmployees]   = useState([]);
   const [companyInfo, setCompanyInfo] = useState(null);
-  const [page, setPage]         = useState("home");
-  const [showAdd, setShowAdd]   = useState(false);
-  const [loading, setLoading]   = useState(false);
-  const [loadMsg, setLoadMsg]   = useState("");
-  const [showChat, setShowChat] = useState(false);
+  const [page,        setPage]        = useState("home");
+  const [showAdd,     setShowAdd]     = useState(false);
+  const [showSettings,setShowSettings]= useState(false);
+  const [loading,     setLoading]     = useState(false);
+  const [loadMsg,     setLoadMsg]     = useState("");
+  const [showChat,    setShowChat]    = useState(false);
   const fileRef   = useRef();
   const pendingId = useRef(null);
+
+  const saveEmployee   = useCallback(e => setEmployees(p=>{const i=p.findIndex(x=>x.id===e.id);return i>=0?p.map(x=>x.id===e.id?e:x):[...p,e];}), []);
+  const deleteEmployee = useCallback(id => setEmployees(p=>p.filter(e=>e.id!==id)), []);
 
   const allTxs = useMemo(()=>accounts.flatMap(a=>a.txs||[]),[accounts]);
   const selAcc  = page.startsWith("acc:") ? accounts.find(a=>"acc:"+a.id===page) : null;
@@ -2581,6 +2586,14 @@ export default function App(){
 
     {showAdd&&<AddAccModal onAdd={a=>{setAccounts(p=>[...p,a]);setPage("acc:"+a.id);}} onClose={()=>setShowAdd(false)}/>}
     {showChat&&<AIChatOverlay accounts={accounts} clients={clients} onAddTx={addTxToAccount} onClose={()=>setShowChat(false)}/>}
+    {showSettings&&<SettingsModal
+      projects={projects}
+      onSaveProject={saveProject}
+      onDeleteProject={deleteProject}
+      companyInfo={companyInfo}
+      onSetCompanyInfo={ci=>{setCompanyInfo(ci);}}
+      onClose={()=>setShowSettings(false)}
+    />}
 
     {/* AI 채팅 플로팅 버튼 */}
     {!showChat&&<button onClick={()=>setShowChat(true)} style={{
@@ -2636,6 +2649,7 @@ export default function App(){
           {id:"clients",  icon:"🏢",label:"거래처 관리", badge:clients.length>0?`${clients.length}개`:null, badgeColor:"#f59e0b"},
           {id:"projects", icon:"🗂",label:"프로젝트",    badge:projects.length>0?`${projects.length}개`:null, badgeColor:"#8b5cf6"},
           {id:"cashflow", icon:"💰",label:"캐시플로우",   badge:plans.length>0?`${plans.length}건`:null, badgeColor:"#34d399"},
+          {id:"hr",       icon:"👥",label:"인사 관리",   badge:employees.length>0?`${employees.length}명`:null, badgeColor:"#f472b6"},
         ].map(n=><button key={n.id} onClick={()=>setPage(n.id)} style={{
           width:"100%",display:"flex",alignItems:"center",gap:9,padding:"11px 14px",
           border:"none",cursor:"pointer",textAlign:"left",flexShrink:0,
@@ -2698,12 +2712,17 @@ export default function App(){
             textAlign:"center",fontStyle:"italic"}}>등록된 계좌 없음</div>}
         </div>
 
-        {/* Add button */}
-        <div style={{padding:"12px",borderTop:"1px solid rgba(255,255,255,.07)",flexShrink:0}}>
+        {/* Add + Settings buttons */}
+        <div style={{padding:"12px",borderTop:"1px solid rgba(255,255,255,.07)",flexShrink:0,display:"flex",flexDirection:"column",gap:6}}>
           <button onClick={()=>setShowAdd(true)} style={{width:"100%",padding:"9px 0",borderRadius:10,cursor:"pointer",
             background:"rgba(139,92,246,.1)",border:"1px dashed rgba(139,92,246,.4)",
             color:"#a78bfa",fontSize:12,fontWeight:700,display:"flex",alignItems:"center",justifyContent:"center",gap:5}}>
             <span style={{fontSize:15}}>+</span> 계좌 · 카드 추가
+          </button>
+          <button onClick={()=>setShowSettings(true)} style={{width:"100%",padding:"8px 0",borderRadius:10,cursor:"pointer",
+            background:"rgba(255,255,255,.04)",border:"1px solid rgba(255,255,255,.08)",
+            color:"#6b7280",fontSize:11,fontWeight:600,display:"flex",alignItems:"center",justifyContent:"center",gap:5}}>
+            <span>⚙️</span> 설정
           </button>
         </div>
       </div>
@@ -2735,6 +2754,7 @@ export default function App(){
             onSave={saveProject} onDelete={deleteProject} onTagTx={tagTx}/>}
           {page==="cashflow"&&<CashflowPage accounts={accounts} allTxs={allTxs}
             plans={plans} onSavePlan={savePlan} onDeletePlan={deletePlan}/>}
+          {page==="hr"&&<HRPage employees={employees} onSave={saveEmployee} onDelete={deleteEmployee}/>}
           {selAcc&&<AccountPage acc={selAcc} onUpdate={updateTx} onUpload={()=>{pendingId.current=selAcc.id;fileRef.current.click();}} projects={projects} onTagTx={tagTx}/>}
         </div>
       </div>
@@ -3521,4 +3541,590 @@ function HomeOverview({accounts,allTxs,onSelect,onAdd}){
           })}
         </div>}
   </div>;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SETTINGS MODAL  (설정창 - 계정과목·프로젝트·회사정보 관리)
+// ─────────────────────────────────────────────────────────────────────────────
+const DEFAULT_PALETTE = [
+  "#34d399","#60a5fa","#a78bfa","#f59e0b","#f87171","#38bdf8",
+  "#fb923c","#e879f9","#a3e635","#2dd4bf","#818cf8","#c084fc",
+];
+
+function SettingsModal({ projects, onSaveProject, onDeleteProject, companyInfo, onSetCompanyInfo, onClose }) {
+  const [tab, setTab] = useState("accounts");
+  const [accList, setAccList] = useState(() =>
+    Object.entries(ACC_MAP).map(([key, v]) => ({ key, ...v, color: CAT_COLOR[key]||"#9ca3af", custom: false }))
+  );
+  const [newAcc, setNewAcc] = useState({ key:"", label:"", group:"sga", color:"#8b5cf6" });
+  const [newProj, setNewProj] = useState({ name:"", color:"#8b5cf6", desc:"" });
+  const [ci, setCi] = useState(companyInfo || { companyName:"", industry:"", fiscalYear:new Date().getFullYear().toString(), scale:"소기업" });
+
+  const addAccount = () => {
+    if (!newAcc.key.trim() || !newAcc.label.trim()) return alert("계정과목 키와 이름을 입력하세요.");
+    if (ACC_MAP[newAcc.key]) return alert("이미 존재하는 계정과목입니다.");
+    const plGroup = newAcc.group === "revenue" ? "revenue" : newAcc.group === "cogs" ? "cogs" : "sga";
+    ACC_MAP[newAcc.key] = { fs:"pl", plGroup, label: newAcc.label };
+    CAT_COLOR[newAcc.key] = newAcc.color;
+    setAccList(p => [...p, { key: newAcc.key, label: newAcc.label, plGroup, color: newAcc.color, custom: true }]);
+    setNewAcc({ key:"", label:"", group:"sga", color:"#8b5cf6" });
+  };
+
+  const deleteAccount = (key) => {
+    if (!window.confirm(`'${key}' 계정과목을 삭제할까요?`)) return;
+    delete ACC_MAP[key];
+    delete CAT_COLOR[key];
+    setAccList(p => p.filter(a => a.key !== key));
+  };
+
+  const addProject = () => {
+    if (!newProj.name.trim()) return alert("프로젝트명을 입력하세요.");
+    onSaveProject({ id: Date.now().toString(), ...newProj });
+    setNewProj({ name:"", color:"#8b5cf6", desc:"" });
+  };
+
+  const saveCompanyInfo = () => { onSetCompanyInfo(ci); alert("저장되었습니다."); };
+
+  const TAB = [
+    { id:"accounts", label:"📊 계정과목" },
+    { id:"projects", label:"🗂 프로젝트" },
+    { id:"company",  label:"🏢 회사 정보" },
+    { id:"theme",    label:"🎨 기타 설정" },
+  ];
+
+  const BG2 = "rgba(255,255,255,.035)";
+  const BD  = "1px solid rgba(255,255,255,.08)";
+
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.75)",zIndex:400,display:"flex",alignItems:"center",justifyContent:"center"}}
+      onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div style={{width:680,maxHeight:"85vh",borderRadius:18,background:"#111827",
+        border:"1px solid rgba(255,255,255,.1)",display:"flex",flexDirection:"column",overflow:"hidden",
+        boxShadow:"0 24px 80px rgba(0,0,0,.6)"}}>
+
+        {/* Header */}
+        <div style={{padding:"18px 24px",borderBottom:"1px solid rgba(255,255,255,.07)",
+          display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
+          <div>
+            <div style={{fontSize:16,fontWeight:900,color:"#fff"}}>⚙️ 설정</div>
+            <div style={{fontSize:11,color:"#6b7280",marginTop:2}}>계정과목·프로젝트·회사 정보 관리</div>
+          </div>
+          <button onClick={onClose} style={{background:"none",border:"none",color:"#6b7280",fontSize:20,cursor:"pointer",padding:"4px 8px"}}>✕</button>
+        </div>
+
+        {/* Tabs */}
+        <div style={{display:"flex",gap:4,padding:"10px 16px",borderBottom:"1px solid rgba(255,255,255,.07)",flexShrink:0,background:"#0d1117"}}>
+          {TAB.map(t => (
+            <button key={t.id} onClick={()=>setTab(t.id)} style={{
+              padding:"7px 14px",borderRadius:8,cursor:"pointer",fontSize:12,fontWeight:tab===t.id?700:400,
+              background:tab===t.id?"rgba(139,92,246,.2)":"transparent",
+              border:`1px solid ${tab===t.id?"rgba(139,92,246,.5)":"transparent"}`,
+              color:tab===t.id?"#c4b5fd":"#6b7280",transition:"all .12s",
+            }}>{t.label}</button>
+          ))}
+        </div>
+
+        {/* Content */}
+        <div style={{flex:1,overflowY:"auto",padding:"20px 24px"}}>
+
+          {/* ── 계정과목 탭 ── */}
+          {tab==="accounts" && (
+            <div>
+              <div style={{fontSize:12,color:"#6b7280",marginBottom:14}}>
+                계정과목을 추가·삭제하여 거래 분류를 커스터마이징 하세요.
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:5,marginBottom:20}}>
+                {["revenue","cogs","sga"].map(grp => {
+                  const items = accList.filter(a => a.plGroup === grp);
+                  if (!items.length) return null;
+                  const gLabel = grp==="revenue"?"📈 매출":grp==="cogs"?"📦 매출원가":"💼 판매관리비";
+                  const gColor = grp==="revenue"?"#34d399":grp==="cogs"?"#60a5fa":"#a78bfa";
+                  return (
+                    <div key={grp} style={{marginBottom:10}}>
+                      <div style={{fontSize:10,fontWeight:800,color:gColor,marginBottom:7,letterSpacing:".05em"}}>{gLabel}</div>
+                      <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                        {items.map(a => (
+                          <div key={a.key} style={{display:"flex",alignItems:"center",gap:5,
+                            padding:"5px 10px 5px 8px",borderRadius:20,
+                            background:`${a.color}18`,border:`1px solid ${a.color}44`}}>
+                            <span style={{width:8,height:8,borderRadius:"50%",background:a.color,flexShrink:0}}/>
+                            <span style={{fontSize:12,color:"#e5e7eb"}}>{a.label}</span>
+                            <span style={{fontSize:9,color:"#4b5563",marginLeft:2}}>({a.key})</span>
+                            <button onClick={()=>deleteAccount(a.key)} style={{
+                              background:"none",border:"none",color:"#4b5563",cursor:"pointer",
+                              fontSize:12,padding:"0 2px",lineHeight:1,
+                            }} title="삭제">✕</button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              {/* 추가 폼 */}
+              <div style={{padding:"16px",borderRadius:12,background:BG2,border:BD}}>
+                <div style={{fontSize:12,fontWeight:700,color:"#8b5cf6",marginBottom:12}}>+ 계정과목 추가</div>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
+                  <div>
+                    <div style={{fontSize:10,color:"#6b7280",marginBottom:4}}>계정키 (예: 외주용역비)</div>
+                    <input value={newAcc.key} onChange={e=>setNewAcc(p=>({...p,key:e.target.value}))}
+                      placeholder="외주용역비" style={{width:"100%",padding:"8px 10px",borderRadius:8,
+                      background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",
+                      color:"#e5e7eb",fontSize:12,outline:"none",boxSizing:"border-box"}}/>
+                  </div>
+                  <div>
+                    <div style={{fontSize:10,color:"#6b7280",marginBottom:4}}>표시명</div>
+                    <input value={newAcc.label} onChange={e=>setNewAcc(p=>({...p,label:e.target.value}))}
+                      placeholder="외주용역비" style={{width:"100%",padding:"8px 10px",borderRadius:8,
+                      background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",
+                      color:"#e5e7eb",fontSize:12,outline:"none",boxSizing:"border-box"}}/>
+                  </div>
+                </div>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 100px",gap:10,marginBottom:12}}>
+                  <div>
+                    <div style={{fontSize:10,color:"#6b7280",marginBottom:4}}>분류</div>
+                    <select value={newAcc.group} onChange={e=>setNewAcc(p=>({...p,group:e.target.value}))}
+                      style={{width:"100%",padding:"8px 10px",borderRadius:8,
+                      background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",
+                      color:"#e5e7eb",fontSize:12,outline:"none"}}>
+                      <option value="revenue">매출</option>
+                      <option value="cogs">매출원가</option>
+                      <option value="sga">판매관리비</option>
+                    </select>
+                  </div>
+                  <div>
+                    <div style={{fontSize:10,color:"#6b7280",marginBottom:4}}>색상</div>
+                    <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+                      {DEFAULT_PALETTE.map(c=>(
+                        <div key={c} onClick={()=>setNewAcc(p=>({...p,color:c}))}
+                          style={{width:20,height:20,borderRadius:5,background:c,cursor:"pointer",
+                            outline:newAcc.color===c?`2px solid #fff`:"none",outlineOffset:1}}/>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{display:"flex",alignItems:"flex-end"}}>
+                    <button onClick={addAccount} style={{width:"100%",padding:"8px",borderRadius:8,cursor:"pointer",
+                      fontWeight:700,fontSize:12,background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",
+                      border:"none",color:"#fff"}}>추가</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── 프로젝트 탭 ── */}
+          {tab==="projects" && (
+            <div>
+              <div style={{fontSize:12,color:"#6b7280",marginBottom:14}}>
+                프로젝트를 추가하여 거래 내역을 프로젝트별로 분류하세요.
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:20}}>
+                {projects.length===0
+                  ? <div style={{padding:"30px",textAlign:"center",color:"#374151",fontSize:13}}>등록된 프로젝트가 없습니다</div>
+                  : projects.map(p=>(
+                    <div key={p.id} style={{display:"flex",alignItems:"center",gap:10,padding:"10px 14px",
+                      borderRadius:10,background:BG2,border:BD}}>
+                      <div style={{width:10,height:10,borderRadius:3,background:p.color||"#8b5cf6",flexShrink:0}}/>
+                      <div style={{flex:1}}>
+                        <div style={{fontSize:13,fontWeight:700,color:"#e5e7eb"}}>{p.name}</div>
+                        {p.desc&&<div style={{fontSize:11,color:"#6b7280",marginTop:1}}>{p.desc}</div>}
+                      </div>
+                      <button onClick={()=>onDeleteProject(p.id)} style={{
+                        background:"rgba(248,113,113,.1)",border:"1px solid rgba(248,113,113,.3)",
+                        color:"#f87171",borderRadius:7,padding:"4px 10px",cursor:"pointer",fontSize:11}}>삭제</button>
+                    </div>
+                  ))}
+              </div>
+              {/* 프로젝트 추가 */}
+              <div style={{padding:"16px",borderRadius:12,background:BG2,border:BD}}>
+                <div style={{fontSize:12,fontWeight:700,color:"#8b5cf6",marginBottom:12}}>+ 프로젝트 추가</div>
+                <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
+                  <div>
+                    <div style={{fontSize:10,color:"#6b7280",marginBottom:4}}>프로젝트명 *</div>
+                    <input value={newProj.name} onChange={e=>setNewProj(p=>({...p,name:e.target.value}))}
+                      placeholder="프로젝트 A" style={{width:"100%",padding:"8px 10px",borderRadius:8,
+                      background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",
+                      color:"#e5e7eb",fontSize:12,outline:"none",boxSizing:"border-box"}}/>
+                  </div>
+                  <div>
+                    <div style={{fontSize:10,color:"#6b7280",marginBottom:4}}>설명</div>
+                    <input value={newProj.desc} onChange={e=>setNewProj(p=>({...p,desc:e.target.value}))}
+                      placeholder="프로젝트 설명" style={{width:"100%",padding:"8px 10px",borderRadius:8,
+                      background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",
+                      color:"#e5e7eb",fontSize:12,outline:"none",boxSizing:"border-box"}}/>
+                  </div>
+                </div>
+                <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
+                  <div style={{fontSize:10,color:"#6b7280"}}>색상:</div>
+                  {DEFAULT_PALETTE.map(c=>(
+                    <div key={c} onClick={()=>setNewProj(p=>({...p,color:c}))}
+                      style={{width:20,height:20,borderRadius:5,background:c,cursor:"pointer",
+                        outline:newProj.color===c?`2px solid #fff`:"none",outlineOffset:1}}/>
+                  ))}
+                </div>
+                <button onClick={addProject} style={{padding:"8px 20px",borderRadius:8,cursor:"pointer",
+                  fontWeight:700,fontSize:12,background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",
+                  border:"none",color:"#fff"}}>프로젝트 추가</button>
+              </div>
+            </div>
+          )}
+
+          {/* ── 회사 정보 탭 ── */}
+          {tab==="company" && (
+            <div>
+              <div style={{fontSize:12,color:"#6b7280",marginBottom:16}}>회사 기본 정보를 설정합니다.</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,marginBottom:14}}>
+                {[
+                  {label:"회사명",       key:"companyName", placeholder:"(주)핏베어"},
+                  {label:"업종",         key:"industry",    placeholder:"IT서비스"},
+                  {label:"회계연도",     key:"fiscalYear",  placeholder:"2024"},
+                  {label:"기업규모",     key:"scale",       placeholder:"소기업"},
+                  {label:"대표자",       key:"ceo",         placeholder:"홍길동"},
+                  {label:"사업자번호",   key:"bizNo",       placeholder:"123-45-67890"},
+                  {label:"법인번호",     key:"corpNo",      placeholder:"110111-0000000"},
+                  {label:"업태/종목",    key:"bizType",     placeholder:"서비스업/소프트웨어"},
+                  {label:"주소",         key:"address",     placeholder:"서울시 강남구"},
+                  {label:"전화번호",     key:"tel",         placeholder:"02-1234-5678"},
+                  {label:"이메일",       key:"email",       placeholder:"info@company.com"},
+                  {label:"홈페이지",     key:"website",     placeholder:"https://"},
+                ].map(f=>(
+                  <div key={f.key}>
+                    <div style={{fontSize:10,color:"#6b7280",marginBottom:4}}>{f.label}</div>
+                    <input value={ci[f.key]||""} onChange={e=>setCi(p=>({...p,[f.key]:e.target.value}))}
+                      placeholder={f.placeholder} style={{width:"100%",padding:"8px 10px",borderRadius:8,
+                      background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",
+                      color:"#e5e7eb",fontSize:12,outline:"none",boxSizing:"border-box"}}/>
+                  </div>
+                ))}
+              </div>
+              <button onClick={saveCompanyInfo} style={{padding:"10px 28px",borderRadius:10,cursor:"pointer",
+                fontWeight:700,fontSize:13,background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",
+                border:"none",color:"#fff",boxShadow:"0 4px 16px rgba(139,92,246,.35)"}}>
+                저장
+              </button>
+            </div>
+          )}
+
+          {/* ── 기타 설정 탭 ── */}
+          {tab==="theme" && (
+            <div>
+              <div style={{fontSize:12,color:"#6b7280",marginBottom:16}}>추가 설정 항목입니다.</div>
+              {[
+                { icon:"🗓", title:"회계 기준일", desc:"회계연도 시작월 설정 (기본: 1월)" },
+                { icon:"💱", title:"기본 통화",   desc:"현재: 원화(KRW)" },
+                { icon:"🔢", title:"소수점 표시", desc:"금액 소수점 자리수" },
+                { icon:"📧", title:"보고서 이메일", desc:"정기 보고서 수신 이메일" },
+                { icon:"🔒", title:"데이터 백업",  desc:"거래 데이터 JSON 내보내기/가져오기" },
+              ].map(item=>(
+                <div key={item.title} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 16px",
+                  borderRadius:10,background:BG2,border:BD,marginBottom:8,cursor:"pointer"}}
+                  onClick={()=>alert("준비 중인 기능입니다.")}>
+                  <span style={{fontSize:20}}>{item.icon}</span>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:13,fontWeight:700,color:"#e5e7eb"}}>{item.title}</div>
+                    <div style={{fontSize:11,color:"#6b7280",marginTop:2}}>{item.desc}</div>
+                  </div>
+                  <span style={{color:"#374151",fontSize:14}}>›</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div style={{padding:"12px 24px",borderTop:"1px solid rgba(255,255,255,.07)",flexShrink:0,
+          display:"flex",justifyContent:"flex-end"}}>
+          <button onClick={onClose} style={{padding:"8px 22px",borderRadius:9,cursor:"pointer",
+            fontWeight:700,fontSize:12,background:"rgba(255,255,255,.07)",
+            border:"1px solid rgba(255,255,255,.1)",color:"#9ca3af"}}>닫기</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HR PAGE  (인사 관리)
+// ─────────────────────────────────────────────────────────────────────────────
+const HR_FIELDS = [
+  { key:"position",    label:"직함",     placeholder:"부장" },
+  { key:"empNo",       label:"사원번호",  placeholder:"0001" },
+  { key:"hireDate",    label:"입사일",    placeholder:"2020-01-01", type:"date" },
+  { key:"name",        label:"이름",     placeholder:"홍길동" },
+  { key:"nameEn",      label:"영문명",    placeholder:"Hong Gil Dong" },
+  { key:"ext",         label:"내선번호",  placeholder:"031 603 4845" },
+  { key:"fax",         label:"팩스",     placeholder:"031 603 0079" },
+  { key:"mobile",      label:"휴대폰",    placeholder:"010-0000-0000" },
+  { key:"email",       label:"이메일",    placeholder:"name@company.com" },
+  { key:"address",     label:"주소",     placeholder:"서울시" },
+  { key:"idNo",        label:"주민번호",  placeholder:"000000-0000000" },
+  { key:"bank",        label:"은행",     placeholder:"국민은행" },
+  { key:"bankAccNo",   label:"계좌번호",  placeholder:"12345678901234" },
+  { key:"dept",        label:"부서",     placeholder:"PPP 사업단" },
+  { key:"memo",        label:"비고",     placeholder:"" },
+];
+
+async function parseEmployeesFromFile(file) {
+  const isImage = file.type.startsWith("image/");
+  let userContent;
+
+  if (isImage) {
+    const base64 = await new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result.split(",")[1]);
+      r.onerror = rej;
+      r.readAsDataURL(file);
+    });
+    userContent = [
+      { type:"image", source:{ type:"base64", media_type: file.type||"image/png", data: base64 } },
+      { type:"text", text:"이 직원 정보 표를 파싱해주세요." }
+    ];
+  } else {
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, { type:"array" });
+    let text = "";
+    wb.SheetNames.forEach(name => {
+      text += `[시트: ${name}]\n`;
+      text += XLSX.utils.sheet_to_csv(wb.Sheets[name]) + "\n\n";
+    });
+    userContent = text.slice(0, 10000);
+  }
+
+  const sys = `직원 정보 표를 분석하여 JSON 배열로 변환하세요.
+
+응답 형식 (JSON 배열만, 설명 없이):
+[
+  {
+    "position": "직함",
+    "empNo": "사원번호",
+    "hireDate": "YYYY-MM-DD",
+    "name": "이름(한국어)",
+    "nameEn": "영문이름",
+    "ext": "내선번호",
+    "fax": "팩스번호",
+    "mobile": "휴대폰",
+    "email": "이메일",
+    "address": "주소",
+    "idNo": "주민번호",
+    "bank": "은행명",
+    "bankAccNo": "계좌번호",
+    "dept": "부서명",
+    "memo": ""
+  }
+]
+
+규칙:
+- 각 직원은 하나의 객체 (한국이름 행과 영문이름 행이 쌍이면 합쳐서 하나로)
+- 사원번호 없어도 이름 있으면 포함
+- 날짜는 YYYY-MM-DD 형식
+- 없는 필드는 "" (빈 문자열)
+- 부서명은 표의 섹션 제목(예: PPP 사업단)으로 설정`;
+
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      model:"claude-sonnet-4-20250514",
+      max_tokens:4000,
+      system: sys,
+      messages:[{ role:"user", content: userContent }],
+    }),
+  });
+  const data = await res.json();
+  const text2 = (data.content?.[0]?.text||"").trim();
+  return JSON.parse(text2.replace(/```json|```/g,"").trim());
+}
+
+function EmployeeModal({ employee, onSave, onClose }) {
+  const [form, setForm] = useState(employee || HR_FIELDS.reduce((o,f)=>({...o,[f.key]:""}),{}));
+  const set = (k,v) => setForm(p=>({...p,[k]:v}));
+  const handleSave = () => {
+    if (!form.name.trim()) return alert("이름을 입력하세요.");
+    onSave({ id: employee?.id || Date.now().toString(), ...form });
+    onClose();
+  };
+  return (
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,.75)",zIndex:500,display:"flex",alignItems:"center",justifyContent:"center"}}
+      onClick={e=>e.target===e.currentTarget&&onClose()}>
+      <div style={{width:640,maxHeight:"88vh",borderRadius:18,background:"#111827",
+        border:"1px solid rgba(255,255,255,.1)",display:"flex",flexDirection:"column",overflow:"hidden"}}>
+        <div style={{padding:"18px 24px",borderBottom:"1px solid rgba(255,255,255,.07)",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+          <div style={{fontSize:15,fontWeight:800,color:"#fff"}}>{employee?"직원 정보 수정":"직원 추가"}</div>
+          <button onClick={onClose} style={{background:"none",border:"none",color:"#6b7280",fontSize:20,cursor:"pointer"}}>✕</button>
+        </div>
+        <div style={{flex:1,overflowY:"auto",padding:"20px 24px"}}>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+            {HR_FIELDS.map(f=>(
+              <div key={f.key} style={f.key==="address"||f.key==="memo"?{gridColumn:"1/-1"}:{}}>
+                <div style={{fontSize:10,color:"#6b7280",marginBottom:4}}>{f.label}</div>
+                <input value={form[f.key]||""} onChange={e=>set(f.key,e.target.value)}
+                  placeholder={f.placeholder} type={f.type||"text"}
+                  style={{width:"100%",padding:"8px 10px",borderRadius:8,boxSizing:"border-box",
+                  background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.1)",
+                  color:"#e5e7eb",fontSize:12,outline:"none"}}/>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{padding:"14px 24px",borderTop:"1px solid rgba(255,255,255,.07)",display:"flex",justifyContent:"flex-end",gap:8,flexShrink:0}}>
+          <button onClick={onClose} style={{padding:"8px 18px",borderRadius:8,cursor:"pointer",background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.1)",color:"#9ca3af",fontSize:12}}>취소</button>
+          <button onClick={handleSave} style={{padding:"8px 22px",borderRadius:8,cursor:"pointer",fontWeight:700,fontSize:12,background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",border:"none",color:"#fff"}}>저장</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HRPage({ employees, onSave, onDelete }) {
+  const [search, setSearch] = useState("");
+  const [showAdd, setShowAdd] = useState(false);
+  const [editEmp, setEditEmp] = useState(null);
+  const [importing, setImporting] = useState(false);
+  const [importMsg, setImportMsg] = useState("");
+  const [selectedDept, setSelectedDept] = useState("전체");
+  const fileRef = useRef();
+
+  const depts = useMemo(() => {
+    const s = new Set(employees.map(e=>e.dept||"미배정"));
+    return ["전체", ...Array.from(s)];
+  }, [employees]);
+
+  const filtered = useMemo(() =>
+    employees.filter(e => {
+      const matchDept = selectedDept==="전체" || (e.dept||"미배정")===selectedDept;
+      const q = search.toLowerCase();
+      const matchSearch = !q || e.name?.includes(q) || e.position?.includes(q) || e.email?.toLowerCase().includes(q);
+      return matchDept && matchSearch;
+    })
+  , [employees, search, selectedDept]);
+
+  const handleFileUpload = async (files) => {
+    const file = files[0];
+    if (!file) return;
+    setImporting(true);
+    setImportMsg("AI가 직원 정보를 분석 중...");
+    try {
+      const list = await parseEmployeesFromFile(file);
+      if (!list?.length) { alert("직원 정보를 찾을 수 없습니다."); setImporting(false); return; }
+      list.forEach(emp => onSave({ id: Date.now().toString() + Math.random(), ...emp }));
+      alert(`✓ ${list.length}명의 직원 정보가 추가되었습니다.`);
+    } catch(e) { alert("분석 실패: " + e.message); }
+    setImporting(false); setImportMsg("");
+  };
+
+  const CARD_BG = "rgba(255,255,255,.03)";
+  const CARD_BD = "1px solid rgba(255,255,255,.07)";
+
+  return (
+    <div style={{padding:"28px 32px",overflowY:"auto",flex:1}}>
+      {(showAdd||editEmp)&&<EmployeeModal employee={editEmp||null} onSave={emp=>{onSave(emp);setEditEmp(null);setShowAdd(false);}} onClose={()=>{setShowAdd(false);setEditEmp(null);}}/>}
+
+      {/* Header */}
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:20}}>
+        <div>
+          <h2 style={{fontSize:22,fontWeight:900,color:"#fff",margin:"0 0 5px",letterSpacing:"-.03em"}}>인사 관리</h2>
+          <p style={{color:"#6b7280",margin:0,fontSize:13}}>직원 정보 등록 및 관리 · 총 {employees.length}명</p>
+        </div>
+        <div style={{display:"flex",gap:8}}>
+          <button onClick={()=>fileRef.current.click()} disabled={importing}
+            style={{padding:"9px 16px",borderRadius:10,cursor:"pointer",fontSize:12,fontWeight:700,
+              background:"rgba(52,211,153,.1)",border:"1px solid rgba(52,211,153,.3)",color:"#34d399",
+              display:"flex",alignItems:"center",gap:6}}>
+            {importing?<>{importMsg}</>:<><span>📋</span><span>Excel/이미지 업로드</span></>}
+          </button>
+          <button onClick={()=>setShowAdd(true)} style={{padding:"9px 18px",borderRadius:10,cursor:"pointer",
+            fontWeight:800,fontSize:12,background:"linear-gradient(135deg,#8b5cf6,#6d28d9)",border:"none",color:"#fff"}}>
+            + 직원 추가
+          </button>
+        </div>
+      </div>
+      <input ref={fileRef} type="file" accept="image/*,.xlsx,.xls,.csv" style={{display:"none"}}
+        onChange={e=>{if(e.target.files.length)handleFileUpload(Array.from(e.target.files));e.target.value="";}}/>
+
+      {/* 검색 & 부서 필터 */}
+      <div style={{display:"flex",gap:10,marginBottom:20,flexWrap:"wrap"}}>
+        <input value={search} onChange={e=>setSearch(e.target.value)}
+          placeholder="이름·직함·이메일 검색..."
+          style={{flex:1,minWidth:200,padding:"9px 14px",borderRadius:10,
+            background:"rgba(255,255,255,.05)",border:"1px solid rgba(255,255,255,.09)",
+            color:"#e5e7eb",fontSize:12,outline:"none"}}/>
+        <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+          {depts.map(d=>(
+            <button key={d} onClick={()=>setSelectedDept(d)} style={{
+              padding:"7px 14px",borderRadius:20,cursor:"pointer",fontSize:11,fontWeight:selectedDept===d?700:400,
+              background:selectedDept===d?"rgba(139,92,246,.2)":"rgba(255,255,255,.04)",
+              border:`1px solid ${selectedDept===d?"rgba(139,92,246,.5)":"rgba(255,255,255,.08)"}`,
+              color:selectedDept===d?"#c4b5fd":"#6b7280",
+            }}>{d}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* 직원 테이블 */}
+      {filtered.length === 0
+        ? <div style={{padding:"80px 0",textAlign:"center"}}>
+            <div style={{fontSize:40,marginBottom:12}}>👥</div>
+            <div style={{fontSize:15,fontWeight:700,color:"#6b7280",marginBottom:8}}>
+              {employees.length===0 ? "등록된 직원이 없습니다" : "검색 결과가 없습니다"}
+            </div>
+            {employees.length===0&&<div style={{fontSize:12,color:"#374151"}}>
+              직원 추가 버튼 또는 Excel/이미지 업로드로 직원을 등록하세요
+            </div>}
+          </div>
+        : <div style={{display:"flex",flexDirection:"column",gap:1,borderRadius:12,overflow:"hidden",border:CARD_BD}}>
+            {/* 테이블 헤더 */}
+            <div style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1.5fr 1.5fr 1fr 80px",
+              padding:"10px 16px",background:"rgba(255,255,255,.04)",
+              fontSize:10,color:"#6b7280",fontWeight:700,textTransform:"uppercase",letterSpacing:".04em",gap:8}}>
+              <div>이름 / 직함</div><div>사원번호</div><div>입사일</div>
+              <div>연락처</div><div>이메일</div><div>부서</div><div></div>
+            </div>
+            {filtered.map((emp,i)=>(
+              <div key={emp.id} style={{display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1.5fr 1.5fr 1fr 80px",
+                padding:"12px 16px",gap:8,alignItems:"center",
+                background:i%2===0?CARD_BG:"rgba(255,255,255,.01)",
+                borderTop:"1px solid rgba(255,255,255,.04)",transition:"background .1s"}}
+                onMouseEnter={e=>e.currentTarget.style.background="rgba(139,92,246,.06)"}
+                onMouseLeave={e=>e.currentTarget.style.background=i%2===0?CARD_BG:"rgba(255,255,255,.01)"}>
+                <div>
+                  <div style={{fontSize:13,fontWeight:700,color:"#e5e7eb"}}>{emp.name}</div>
+                  <div style={{fontSize:10,color:"#8b5cf6",marginTop:1}}>{emp.position} {emp.nameEn&&`· ${emp.nameEn}`}</div>
+                </div>
+                <div style={{fontSize:12,color:"#9ca3af"}}>{emp.empNo||"-"}</div>
+                <div style={{fontSize:12,color:"#9ca3af"}}>{emp.hireDate||"-"}</div>
+                <div>
+                  <div style={{fontSize:11,color:"#9ca3af"}}>{emp.mobile||"-"}</div>
+                  {emp.ext&&<div style={{fontSize:10,color:"#4b5563",marginTop:1}}>내선 {emp.ext}</div>}
+                </div>
+                <div style={{fontSize:11,color:"#60a5fa",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{emp.email||"-"}</div>
+                <div style={{fontSize:11,color:"#9ca3af"}}>{emp.dept||"-"}</div>
+                <div style={{display:"flex",gap:5}}>
+                  <button onClick={()=>setEditEmp(emp)} style={{padding:"4px 9px",borderRadius:6,cursor:"pointer",
+                    background:"rgba(139,92,246,.1)",border:"1px solid rgba(139,92,246,.3)",color:"#a78bfa",fontSize:10}}>수정</button>
+                  <button onClick={()=>{if(window.confirm(`${emp.name}을(를) 삭제할까요?`))onDelete(emp.id);}} style={{
+                    padding:"4px 7px",borderRadius:6,cursor:"pointer",
+                    background:"rgba(248,113,113,.07)",border:"1px solid rgba(248,113,113,.25)",color:"#f87171",fontSize:10}}>삭제</button>
+                </div>
+              </div>
+            ))}
+          </div>}
+
+      {/* 통계 카드 */}
+      {employees.length > 0 && (
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))",gap:10,marginTop:20}}>
+          {[
+            {l:"전체 직원",v:`${employees.length}명`,c:"#8b5cf6",icon:"👥"},
+            {l:"부서 수",v:`${depts.length-1}개`,c:"#60a5fa",icon:"🏢"},
+            {l:"올해 입사",v:`${employees.filter(e=>e.hireDate?.startsWith(new Date().getFullYear().toString())).length}명`,c:"#34d399",icon:"🆕"},
+            {l:"이메일 등록",v:`${employees.filter(e=>e.email).length}명`,c:"#f59e0b",icon:"📧"},
+          ].map(k=>(
+            <div key={k.l} style={{padding:"14px 16px",borderRadius:12,background:CARD_BG,border:CARD_BD}}>
+              <div style={{fontSize:10,color:"#6b7280",marginBottom:5}}>{k.icon} {k.l}</div>
+              <div style={{fontSize:18,fontWeight:900,color:k.c}}>{k.v}</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
